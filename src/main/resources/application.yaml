@@ -12,3 +12,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
