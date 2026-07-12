@@ -37,7 +37,7 @@ function Header({ simple = false }) {
             도움말
           </button>
 
-          <Button variant="outline" onClick={() => alert("회원가입 준비 중")}>
+          <Button variant="outline" onClick={() => navigate("/signup")}>
             회원가입
           </Button>
         </div>
