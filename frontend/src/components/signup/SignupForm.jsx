@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { signupUser } from "../../services/authApi";
+import { rememberRegisteredUser } from "../../services/session";
 import Button from "../common/Button";
 import "./SignupForm.css";
 
@@ -66,6 +67,11 @@ function SignupForm() {
       });
 
       console.log("회원가입 성공:", result);
+
+      rememberRegisteredUser({
+        name: formData.name,
+        email: formData.email,
+      });
 
       alert("회원가입이 완료되었습니다. 로그인해 주세요.");
       navigate("/login");

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import Button from "../common/Button";
+import { saveLoginUser } from "../../services/session";
 import "./LoginForm.css";
 
 function LoginForm() {
@@ -46,6 +47,8 @@ function LoginForm() {
       const result = await loginUser(formData.email, formData.password);
 
       console.log("로그인 성공", result);
+
+      saveLoginUser(result, formData.email);
 
       navigate("/home");
     } catch (error) {
