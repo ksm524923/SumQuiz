@@ -178,15 +178,15 @@ public class GeminiService {
                 if (!testNodes.isArray() || testNodes.size() != 3) {
                     throw new IllegalStateException(grammar + " 문제의 테스트 케이스가 정확히 3개가 아닙니다.");
                 }
-                String inputExample = firstNonBlank(node.path("inputExample").asText(), testNodes.get(0).path("input").asText());
-                String outputExample = firstNonBlank(node.path("outputExample").asText(), testNodes.get(0).path("expected").asText());
+                String inputExample = firstNonBlank(jsonValueText(node.path("inputExample")), jsonValueText(testNodes.get(0).path("input")));
+                String outputExample = firstNonBlank(jsonValueText(node.path("outputExample")), jsonValueText(testNodes.get(0).path("expected")));
                 List<CodingProblemDraft.TestCase> tests = new ArrayList<>();
                 for (int testIndex = 0; testIndex < 3; testIndex++) {
                     JsonNode test = testNodes.get(testIndex);
                     tests.add(new CodingProblemDraft.TestCase(testIndex + 1,
                         firstNonBlank(test.path("name").asText(), "테스트 케이스 " + (testIndex + 1)),
-                        requiredValue(firstNonBlank(test.path("input").asText(), test.path("inputValue").asText(), inputExample), "테스트 입력"),
-                        requiredValue(firstNonBlank(test.path("expected").asText(), test.path("expectedOutput").asText(), test.path("output").asText(), outputExample), "테스트 기대 출력")));
+                        requiredValue(firstNonBlank(jsonValueText(test.path("input")), jsonValueText(test.path("inputValue")), inputExample), "테스트 입력"),
+                        requiredValue(firstNonBlank(jsonValueText(test.path("expected")), jsonValueText(test.path("expectedOutput")), jsonValueText(test.path("output")), outputExample), "테스트 기대 출력")));
                 }
                 result.add(new CodingProblemDraft(grammar, requiredText(node, "title", "제목"),
                     requiredText(node, "description", "설명"), requirements,
@@ -218,6 +218,11 @@ public class GeminiService {
             if (value != null && !value.isBlank()) return value.trim();
         }
         return "";
+    }
+
+    private String jsonValueText(JsonNode node) {
+        if (node == null || node.isMissingNode() || node.isNull()) return "";
+        return node.isTextual() ? node.asText().trim() : node.toString();
     }
 
     public CodingReviewResponse reviewSolution(CodingProblemDraft problem, String sourceCode) {
