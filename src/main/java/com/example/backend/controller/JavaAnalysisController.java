@@ -15,11 +15,12 @@ public class JavaAnalysisController {
 
     @PostMapping(value = "/analyze", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public JavaAnalysisResponse analyze(@RequestPart("file") MultipartFile file,
-                                        @RequestParam("userId") Long userId) throws Exception {
+                                        @RequestParam("userId") Long userId,
+                                        @RequestParam(value = "difficulty", defaultValue = "균형") String difficulty) throws Exception {
         if (file.isEmpty() || file.getOriginalFilename() == null || !file.getOriginalFilename().toLowerCase().endsWith(".java")) {
             throw new IllegalArgumentException(".java 파일만 업로드할 수 있습니다.");
         }
         if (file.getSize() > 1024 * 1024) throw new IllegalArgumentException("Java 파일은 1MB 이하여야 합니다.");
-        return generationService.generateAll(userId, new String(file.getBytes(), StandardCharsets.UTF_8));
+        return generationService.generateAll(userId, new String(file.getBytes(), StandardCharsets.UTF_8), difficulty);
     }
 }

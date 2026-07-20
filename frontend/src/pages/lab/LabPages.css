@@ -574,6 +574,21 @@
   border-color: var(--color-primary);
 }
 
+.difficulty-field--creation {
+  margin-top: 18px;
+}
+
+.difficulty-options--four {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.difficulty-field--creation small {
+  display: block;
+  margin-top: 8px;
+  color: #7b827b;
+  font-size: 12px;
+}
+
 .ai-generation-note,
 .ai-summary-box {
   padding: 16px 18px;

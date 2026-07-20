@@ -4,7 +4,6 @@ import com.example.backend.dto.JavaAnalysisResponse;
 import com.example.backend.dto.CodingProblemDraft;
 import com.example.backend.dto.CodingReviewResponse;
 import com.example.backend.dto.GeneratedLearningContent;
-import com.example.backend.entity.Quiz;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,32 +60,33 @@ public class GeminiService {
         return objectMapper.readTree(cleaned.substring(start, end + 1));
     }
 
-    public GeneratedLearningContent generateAll(String code) {
+    public GeneratedLearningContent generateAll(String code, String requestedDifficulty) {
         List<JavaSyntaxDetector.Detected> detected = syntaxDetector.detect(code);
         List<JavaSyntaxDetector.Detected> selected = detected.subList(0, 3);
+        String difficulty = normalizeDifficulty(requestedDifficulty);
         String prompt = """
             다음 Java 코드에 대한 학습 콘텐츠를 한 번에 생성하라.
             서버가 실제 코드에서 탐지한 문법 3개만 사용하고 목록 밖의 Java 일반 지식은 추가하지 않는다.
 
             1. summary: 코드의 목적과 흐름을 500자 이내로 요약한다.
             2. grammars: 탐지 목록 순서대로 정확히 3개를 설명한다. name과 evidence는 탐지 목록 값을 그대로 사용한다.
-            3. quizzes: 탐지 목록 순서대로 문법마다 실제 코드 표현을 근거로 하는 객관식 문제를 하나씩, 정확히 3개 만든다. answer는 1부터 5까지다.
-            4. codingProblems: 탐지 목록 순서대로 문법마다 프로그래머스 형식의 Java 코딩 문제를 하나씩, 정확히 3개 만든다.
+            3. codingProblems: 탐지 목록 순서대로 문법마다 프로그래머스 형식의 Java 코딩 문제를 하나씩, 정확히 3개 만든다.
             객관식이 아닌 구현 문제이며 title은 80자, description은 1,000자 이내로 작성한다.
             각 코딩 문제에는 서로 다른 테스트를 정확히 3개 넣고 input과 expected를 짧은 문자열로 작성한다.
-            starterCode에는 class Solution과 구현할 메서드 선언만 넣고 정답은 넣지 않는다.
+            starterCode는 반드시 public class Main과 main 메서드를 포함한다. System.in 입력과 System.out 출력을 사용하되 정답 구현은 TODO로 남긴다.
+            각 tests의 input은 프로그램에 그대로 전달할 표준 입력 문자열이고 expected는 정확한 표준 출력 문자열이다. JSON 배열 표기 대신 공백 또는 줄바꿈으로 구분한다.
+            난이도 규칙은 반드시 지킨다: %s
             JSON 이외의 설명이나 마크다운 코드 블록은 출력하지 않는다.
 
             JSON 형식:
             {"summary":"","grammars":[{"name":"","description":"","rating":3,"evidence":""}],
-            "quizzes":[{"grammarName":"","question":"","option1":"","option2":"","option3":"","option4":"","option5":"","answer":1,"explanation":""}],
             "codingProblems":[{"title":"","description":"","requirements":[""],"inputExample":"","outputExample":"",
-            "starterCode":"class Solution { ... }","difficulty":"쉬움|보통|어려움",
+            "starterCode":"public class Main { public static void main(String[] args) { ... } }","difficulty":"쉬움|보통|어려움",
             "tests":[{"name":"기본 케이스","input":"입력값","expected":"기대 출력"}]}]}
 
             탐지 목록: %s
             Java 코드: %s
-            """.formatted(objectMapper.valueToTree(selected), code);
+            """.formatted(difficultyInstruction(difficulty), objectMapper.valueToTree(selected), code);
         try {
             JsonNode root = readGeminiJson(callGemini(prompt));
             List<JavaAnalysisResponse.Grammar> grammars = new ArrayList<>();
@@ -101,28 +101,8 @@ public class GeminiService {
             JavaAnalysisResponse analysis = new JavaAnalysisResponse(
                 root.path("summary").asText("업로드한 Java 코드를 분석했습니다."), grammars, code);
 
-            JsonNode quizzes = root.path("quizzes");
-            if (quizzes.size() != 3) throw new IllegalStateException("Gemini가 객관식 문제 3개를 반환하지 않았습니다.");
-            List<Quiz> quizResult = new ArrayList<>();
-            Set<String> allowedGrammarNames = new LinkedHashSet<>();
-            selected.forEach(item -> allowedGrammarNames.add(item.name()));
-            for (int i = 0; i < quizzes.size(); i++) {
-                JsonNode node = quizzes.get(i);
-                String grammarName = node.path("grammarName").asText();
-                if (!allowedGrammarNames.contains(grammarName)) {
-                    grammarName = selected.get(i).name();
-                }
-                int answer = node.path("answer").asInt();
-                if (answer < 1 || answer > 5) throw new IllegalStateException("정답 번호가 올바르지 않습니다.");
-                Quiz quiz = new Quiz();
-                quiz.setGrammarName(grammarName); quiz.setQuestion(node.path("question").asText());
-                quiz.setOption1(node.path("option1").asText()); quiz.setOption2(node.path("option2").asText());
-                quiz.setOption3(node.path("option3").asText()); quiz.setOption4(node.path("option4").asText()); quiz.setOption5(node.path("option5").asText());
-                quiz.setAnswer(answer); quiz.setExplanation(node.path("explanation").asText()); quizResult.add(quiz);
-            }
-
-            List<CodingProblemDraft> codingProblems = parseCodingProblems(root.path("codingProblems"), selected);
-            return new GeneratedLearningContent(analysis, quizResult, codingProblems);
+            List<CodingProblemDraft> codingProblems = parseCodingProblems(root.path("codingProblems"), selected, difficulty);
+            return new GeneratedLearningContent(analysis, codingProblems);
         } catch (Exception e) {
             if (e instanceof IllegalStateException state) throw state;
             throw new IllegalStateException("Gemini 통합 학습 결과를 처리하지 못했습니다.", e);
@@ -133,7 +113,8 @@ public class GeminiService {
         return callGemini("다음 내용을 한국어 JSON으로 요약해줘: " + text);
     }
 
-    private List<CodingProblemDraft> parseCodingProblems(JsonNode problems, List<JavaSyntaxDetector.Detected> selected) {
+    private List<CodingProblemDraft> parseCodingProblems(JsonNode problems, List<JavaSyntaxDetector.Detected> selected,
+                                                          String difficulty) {
         try {
             if (!problems.isArray() || problems.size() != 3) {
                 throw new IllegalStateException("AI가 코딩 문제를 정확히 3개 생성하지 못했습니다. 다시 시도해 주세요.");
@@ -162,11 +143,15 @@ public class GeminiService {
                         requiredValue(firstNonBlank(jsonValueText(test.path("input")), jsonValueText(test.path("inputValue")), inputExample), "테스트 입력"),
                         requiredValue(firstNonBlank(jsonValueText(test.path("expected")), jsonValueText(test.path("expectedOutput")), jsonValueText(test.path("output")), outputExample), "테스트 기대 출력")));
                 }
+                String starterCode = requiredText(node, "starterCode", "시작 코드");
+                if (!starterCode.matches("(?s).*\\bpublic\\s+class\\s+Main\\b.*")) {
+                    throw new IllegalStateException(grammar + " 문제의 시작 코드에 public class Main이 없습니다.");
+                }
                 result.add(new CodingProblemDraft(grammar, requiredText(node, "title", "제목"),
                     requiredText(node, "description", "설명"), requirements,
                     requiredValue(inputExample, "입력 예시"), requiredValue(outputExample, "출력 예시"),
-                    requiredText(node, "starterCode", "시작 코드"),
-                    node.path("difficulty").asText("보통"), tests));
+                    starterCode,
+                    difficultyForIndex(difficulty, i), tests));
             }
             return result;
         } catch (Exception e) {
@@ -174,6 +159,21 @@ public class GeminiService {
             if (e instanceof IllegalStateException state) throw state;
             throw new IllegalStateException("Gemini 코딩 문제 결과를 처리하지 못했습니다.", e);
         }
+    }
+
+    private String normalizeDifficulty(String difficulty) {
+        return Set.of("쉬움", "보통", "어려움").contains(difficulty) ? difficulty : "균형";
+    }
+
+    private String difficultyInstruction(String difficulty) {
+        return "균형".equals(difficulty)
+            ? "첫 번째는 쉬움, 두 번째는 보통, 세 번째는 어려움으로 생성한다."
+            : "세 문제 모두 " + difficulty + " 난이도로 생성한다.";
+    }
+
+    private String difficultyForIndex(String difficulty, int index) {
+        if (!"균형".equals(difficulty)) return difficulty;
+        return List.of("쉬움", "보통", "어려움").get(index);
     }
 
     private String requiredText(JsonNode node, String field, String label) {

@@ -2,7 +2,6 @@ import { Navigate, Route, Routes } from "react-router";
 
 import AppLayout from "./layouts/AppLayout";
 import LoginPage from "./pages/LoginPage";
-import QuizPage from "./pages/QuizPage";
 import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/lab/DashboardPage";
 import ProblemCreatePage from "./pages/lab/ProblemCreatePage";
@@ -24,7 +23,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/problems" element={<ProblemListPage />} />
         <Route path="/problems/new" element={<ProblemCreatePage />} />
-        <Route path="/quiz" element={<QuizPage />} />
+        <Route path="/quiz" element={<Navigate to="/problems" replace />} />
         <Route
           path="/problems/:problemId"
           element={<ProblemWorkspacePage />}

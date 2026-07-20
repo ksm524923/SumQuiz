@@ -21,12 +21,13 @@ async function parseResponse(response) {
   return result;
 }
 
-export async function analyzeJavaFile(file) {
+export async function analyzeJavaFile(file, difficulty = "균형") {
   const userId = getUserId();
   if (!Number.isInteger(userId) || userId <= 0) throw new Error("로그인 후 Java 파일을 분석해 주세요.");
   const formData = new FormData();
   formData.append("file", file);
   formData.append("userId", String(userId));
+  formData.append("difficulty", difficulty);
   const result = await parseResponse(await fetch(`${API_BASE_URL}/java/analyze`, { method: "POST", body: formData }));
   if (result?.grammars?.length !== 3) throw new Error("AI 분석 결과에 핵심 문법 3개가 필요합니다.");
   return result;

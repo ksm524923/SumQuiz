@@ -6,7 +6,6 @@ import com.example.backend.dto.JavaAnalysisResponse;
 import com.example.backend.entity.CodingProblem;
 import com.example.backend.entity.User;
 import com.example.backend.repository.CodingProblemRepository;
-import com.example.backend.repository.QuizRepository;
 import com.example.backend.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -16,27 +15,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class JavaLearningGenerationService {
     private final GeminiService geminiService;
     private final UserRepository userRepository;
-    private final QuizRepository quizRepository;
     private final CodingProblemRepository problemRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public JavaLearningGenerationService(GeminiService geminiService, UserRepository userRepository,
-                                         QuizRepository quizRepository, CodingProblemRepository problemRepository) {
+                                         CodingProblemRepository problemRepository) {
         this.geminiService = geminiService;
         this.userRepository = userRepository;
-        this.quizRepository = quizRepository;
         this.problemRepository = problemRepository;
     }
 
     @Transactional
-    public JavaAnalysisResponse generateAll(Long userId, String code) {
+    public JavaAnalysisResponse generateAll(Long userId, String code, String difficulty) {
         if (userId == null) throw new IllegalArgumentException("로그인 후 Java 파일을 분석해 주세요.");
-        GeneratedLearningContent generated = geminiService.generateAll(code);
+        GeneratedLearningContent generated = geminiService.generateAll(code, difficulty);
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        generated.quizzes().forEach(quiz -> quiz.setUser(user));
-        quizRepository.saveAll(generated.quizzes());
         problemRepository.saveAll(generated.codingProblems().stream()
             .map(draft -> toEntity(user, draft)).toList());
         return generated.analysis();

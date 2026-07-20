@@ -8,7 +8,6 @@ import "./AppLayout.css";
 const navigationItems = [
   { to: "/dashboard", label: "대시보드", icon: "⌂" },
   { to: "/problems", label: "Java 문제", icon: "▧" },
-  { to: "/quiz", label: "Java 퀴즈", icon: "▣" },
   { to: "/wrong-notes", label: "오답노트", icon: "▤" },
   { to: "/statistics", label: "학습 통계", icon: "▥" },
   { to: "/profile", label: "마이페이지", icon: "○" },

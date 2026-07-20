@@ -10,6 +10,7 @@ function ProblemCreatePage() {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [analysis, setAnalysis] = useState(null);
+  const [difficulty, setDifficulty] = useState("균형");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -46,7 +47,7 @@ function ProblemCreatePage() {
     try {
       setIsAnalyzing(true);
       setErrorMessage("");
-      setAnalysis(await analyzeJavaFile(selectedFile));
+      setAnalysis(await analyzeJavaFile(selectedFile, difficulty));
     } catch (error) {
       setErrorMessage(error.message || "Java 파일을 분석하지 못했습니다.");
     } finally {
@@ -138,6 +139,26 @@ function ProblemCreatePage() {
               </button>
             </div>
           )}
+
+          <fieldset className="difficulty-field difficulty-field--creation">
+            <legend>문제 난이도</legend>
+            <div className="difficulty-options difficulty-options--four">
+              {["균형", "쉬움", "보통", "어려움"].map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  className={difficulty === item ? "difficulty-option difficulty-option--active" : "difficulty-option"}
+                  onClick={() => setDifficulty(item)}
+                  disabled={isAnalyzing}
+                >
+                  {item === "균형" ? "균형 있게" : item}
+                </button>
+              ))}
+            </div>
+            <small>
+              {difficulty === "균형" ? "쉬움·보통·어려움 문제를 각각 1개 생성합니다." : `${difficulty} 문제 3개를 생성합니다.`}
+            </small>
+          </fieldset>
 
           <button
             type="submit"

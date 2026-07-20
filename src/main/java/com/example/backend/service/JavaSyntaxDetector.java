@@ -28,9 +28,10 @@ public class JavaSyntaxDetector {
 
     public List<Detected> detect(String code) {
         if (code == null || code.isBlank()) throw new IllegalArgumentException("Java 코드가 비어 있습니다.");
+        String codeWithoutComments = removeComments(code);
         List<Detected> found = new ArrayList<>();
         for (Rule rule : RULES) {
-            var matcher = rule.pattern.matcher(code);
+            var matcher = rule.pattern.matcher(codeWithoutComments);
             if (matcher.find()) {
                 String evidence = matcher.group();
                 found.add(new Detected(rule.name, evidence.length() > 80 ? evidence.substring(0, 80) : evidence));
@@ -39,5 +40,63 @@ public class JavaSyntaxDetector {
         }
         if (found.size() < 3) throw new IllegalArgumentException("서로 다른 Java 문법을 3개 이상 포함한 파일을 업로드해 주세요.");
         return found;
+    }
+
+    private String removeComments(String code) {
+        StringBuilder result = new StringBuilder(code.length());
+        boolean lineComment = false;
+        boolean blockComment = false;
+        boolean stringLiteral = false;
+        boolean charLiteral = false;
+        boolean escaped = false;
+
+        for (int i = 0; i < code.length(); i++) {
+            char current = code.charAt(i);
+            char next = i + 1 < code.length() ? code.charAt(i + 1) : '\0';
+
+            if (lineComment) {
+                if (current == '\n') {
+                    lineComment = false;
+                    result.append(current);
+                } else {
+                    result.append(' ');
+                }
+                continue;
+            }
+            if (blockComment) {
+                if (current == '*' && next == '/') {
+                    result.append("  ");
+                    i++;
+                    blockComment = false;
+                } else {
+                    result.append(current == '\n' ? '\n' : ' ');
+                }
+                continue;
+            }
+            if (!stringLiteral && !charLiteral && current == '/' && next == '/') {
+                result.append("  ");
+                i++;
+                lineComment = true;
+                continue;
+            }
+            if (!stringLiteral && !charLiteral && current == '/' && next == '*') {
+                result.append("  ");
+                i++;
+                blockComment = true;
+                continue;
+            }
+
+            result.append(current);
+            if (escaped) {
+                escaped = false;
+            } else if ((stringLiteral || charLiteral) && current == '\\') {
+                escaped = true;
+            } else if (!charLiteral && current == '"') {
+                stringLiteral = !stringLiteral;
+            } else if (!stringLiteral && current == '\'') {
+                charLiteral = !charLiteral;
+            }
+        }
+        return result.toString();
     }
 }

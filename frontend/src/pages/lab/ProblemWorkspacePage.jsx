@@ -66,7 +66,7 @@ function ProblemWorkspacePage() {
       setTests(result.tests);
       setSubmissionResult(result);
     } catch (error) {
-      setErrorMessage(error.message || "AI 코드 검토에 실패했습니다.");
+      setErrorMessage(error.message || "Java 코드 실행에 실패했습니다.");
     } finally {
       setIsSubmitting(false);
     }
@@ -158,7 +158,7 @@ function ProblemWorkspacePage() {
               disabled={isSubmitting}
               onClick={handleSubmit}
             >
-              {isSubmitting ? "AI가 코드를 검토하고 있습니다..." : "AI 실행 검토"}
+              {isSubmitting ? "Java 코드를 실행하고 있습니다..." : "실행하기"}
             </button>
 
             <button
@@ -182,7 +182,7 @@ function ProblemWorkspacePage() {
 
           <section className="feedback-card">
             <div className="feedback-card__header">
-              <h2>AI 예상 결과</h2>
+              <h2>실행 결과</h2>
               {submissionResult && (
                 <span
                   className={
@@ -198,7 +198,7 @@ function ProblemWorkspacePage() {
 
             {!submissionResult ? (
               <div className="compact-empty">
-                코드를 제출하면 실제 실행 없이 테스트별 예상 결과와 AI 피드백이 표시됩니다.
+                코드를 실행하면 테스트 케이스별 실제 출력과 통과 여부가 표시됩니다.
               </div>
             ) : (
               <>

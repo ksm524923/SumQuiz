@@ -11,15 +11,15 @@ import java.util.*;
 
 @Service
 public class ProblemGenerationService {
-    private final GeminiService geminiService;
+    private final JavaCodeExecutionService executionService;
     private final CodingProblemRepository problemRepository;
     private final CodingSubmissionRepository submissionRepository;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ProblemGenerationService(GeminiService geminiService, CodingProblemRepository problemRepository,
+    public ProblemGenerationService(JavaCodeExecutionService executionService, CodingProblemRepository problemRepository,
                                     CodingSubmissionRepository submissionRepository, UserRepository userRepository) {
-        this.geminiService = geminiService; this.problemRepository = problemRepository;
+        this.executionService = executionService; this.problemRepository = problemRepository;
         this.submissionRepository = submissionRepository; this.userRepository = userRepository;
     }
 
@@ -45,7 +45,7 @@ public class ProblemGenerationService {
     public Map<String, Object> review(CodingSubmissionRequest request) {
         User user = user(request.getUserId());
         CodingProblem problem = problemRepository.findByIdAndUser(request.getProblemId(), user).orElseThrow(() -> new IllegalArgumentException("문제를 찾을 수 없습니다."));
-        CodingReviewResponse review = geminiService.reviewSolution(toDraft(problem), request.getSourceCode());
+        CodingReviewResponse review = executionService.execute(toDraft(problem), request.getSourceCode());
         int passedCount = (int) review.tests().stream().filter(test -> "passed".equals(test.status())).count();
         CodingSubmission submission = new CodingSubmission(); submission.setUser(user); submission.setProblem(problem);
         submission.setSourceCode(request.getSourceCode()); submission.setTestsJson(write(review.tests())); submission.setHint(review.hint());
