@@ -1,6 +1,6 @@
 .lab-shell {
   min-height: 100vh;
-  background: #f7f8f7;
+  background: #fffaf3;
 }
 
 .lab-header {
@@ -63,7 +63,7 @@
   width: 36px;
   height: 36px;
   color: #ffffff;
-  background: #dfe5df;
+  background: #ffe0c5;
   border-radius: 50%;
   place-items: center;
 }
@@ -79,7 +79,7 @@
   padding: 28px 20px 22px;
   flex-direction: column;
   background: #ffffff;
-  border-right: 1px solid #e5e8e4;
+  border-right: 1px solid #f1dfcf;
 }
 
 .lab-create-button {
@@ -92,7 +92,7 @@
   background: linear-gradient(135deg, #ff812f, #ff5a0a);
   border-radius: 8px;
   font-weight: 700;
-  box-shadow: 0 8px 20px rgb(74 166 71 / 18%);
+  box-shadow: 0 8px 20px rgb(255 107 26 / 20%);
 }
 
 .lab-create-button:hover {
@@ -119,12 +119,12 @@
 }
 
 .lab-sidebar__link:hover {
-  background: #f4f8f3;
+  background: #fff5eb;
 }
 
 .lab-sidebar__link--active {
   color: #d94f08;
-  background: #edf6eb;
+  background: #fff0e2;
 }
 
 .lab-sidebar__icon {
@@ -184,6 +184,7 @@
   min-height: 100vh;
   padding-top: 68px;
   padding-left: 240px;
+  background: #fffaf3;
 }
 
 @media (max-width: 850px) {
