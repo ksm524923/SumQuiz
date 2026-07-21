@@ -53,7 +53,7 @@ function Header({ simple = false }) {
             </NavLink>
 
             <NavLink className={getNavigationClass} to="/summary">
-              AI 문제
+              Java 문제
             </NavLink>
 
             <NavLink className={getNavigationClass} to="/quiz">

@@ -1,5 +1,5 @@
-import { loginUser, loginWithGoogle } from "../../services/authApi";
-import { useEffect, useRef, useState } from "react";
+import { loginUser } from "../../services/authApi";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import Button from "../common/Button";
@@ -8,73 +8,21 @@ import "./LoginForm.css";
 
 function LoginForm() {
   const navigate = useNavigate();
-  const googleButtonRef = useRef(null);
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    rememberLogin: false,
   });
 
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  useEffect(() => {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    if (!clientId) return undefined;
-
-    let attempts = 0;
-    const initializeGoogleButton = () => {
-      if (!window.google?.accounts.id || !googleButtonRef.current) {
-        attempts += 1;
-        if (attempts >= 100) {
-          window.clearInterval(timerId);
-          setErrorMessage("Google 로그인 버튼을 불러오지 못했습니다.");
-        }
-        return;
-      }
-
-      window.clearInterval(timerId);
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: async (response) => {
-          try {
-            setIsLoggingIn(true);
-            setErrorMessage("");
-            const result = await loginWithGoogle(response.credential);
-            saveLoginUser(result, result.email);
-            navigate("/home");
-          } catch (error) {
-            setErrorMessage(
-              error.message || "Google 로그인에 실패했습니다. 다시 시도해 주세요.",
-            );
-          } finally {
-            setIsLoggingIn(false);
-          }
-        },
-      });
-      googleButtonRef.current.replaceChildren();
-      window.google.accounts.id.renderButton(googleButtonRef.current, {
-        type: "standard",
-        theme: "outline",
-        size: "large",
-        shape: "rectangular",
-        text: "signin_with",
-        width: 330,
-      });
-    };
-
-    const timerId = window.setInterval(initializeGoogleButton, 100);
-    initializeGoogleButton();
-    return () => window.clearInterval(timerId);
-  }, [navigate]);
-
   function handleInputChange(event) {
-    const { name, value, type, checked } = event.target;
+    const { name, value } = event.target;
 
     setFormData((previousData) => ({
       ...previousData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   }
 
@@ -121,11 +69,10 @@ function LoginForm() {
   return (
     <section className="login-form">
       <div className="login-form__heading">
-        <h2>로그인</h2>
+        <span>WELCOME BACK</span>
+        <h2>HWV에 오신 걸 환영해요!</h2>
 
-        <p>
-          <strong>HWV</strong>에 오신 것을 환영합니다!
-        </p>
+        <p>로그인하고 Java 학습을 이어가세요.</p>
       </div>
 
       <form onSubmit={handleSubmit} aria-busy={isLoggingIn}>
@@ -161,36 +108,10 @@ function LoginForm() {
 
         {errorMessage && <p className="login-form__error">{errorMessage}</p>}
 
-        <div className="login-form__options">
-          <label className="login-form__remember">
-            <input
-              name="rememberLogin"
-              type="checkbox"
-              checked={formData.rememberLogin}
-              onChange={handleInputChange}
-              disabled={isLoggingIn}
-            />
-
-            <span>로그인 상태 유지</span>
-          </label>
-
-          <Link to="/find-password">비밀번호 찾기</Link>
-        </div>
-
         <Button type="submit" fullWidth disabled={isLoggingIn}>
           {isLoggingIn ? "로그인 중..." : "로그인"}
         </Button>
       </form>
-
-      <div className="login-form__divider">
-        <span>또는</span>
-      </div>
-
-      <div className="login-form__google" ref={googleButtonRef}>
-        {!import.meta.env.VITE_GOOGLE_CLIENT_ID && (
-          <span>Google 로그인 설정이 필요합니다.</span>
-        )}
-      </div>
 
       <p className="login-form__signup">
         아직 계정이 없으신가요?

@@ -11,8 +11,6 @@ function StatisticsPage() {
 
   useEffect(() => {
     let active = true;
-    setIsLoading(true);
-    setErrorMessage("");
 
     getLearningStatistics().then((result) => {
       if (active) {
@@ -25,6 +23,12 @@ function StatisticsPage() {
       active = false;
     };
   }, [reloadKey]);
+
+  function handleReload() {
+    setIsLoading(true);
+    setErrorMessage("");
+    setReloadKey((value) => value + 1);
+  }
 
   const correctAnswers = statistics?.correctAnswers ?? 0;
   const incorrectAnswers = statistics?.incorrectAnswers ?? 0;
@@ -41,7 +45,7 @@ function StatisticsPage() {
     return (
       <div className="lab-page"><section className="large-empty">
         <strong>학습 통계를 불러오지 못했습니다.</strong><span>{errorMessage}</span>
-        <button type="button" className="lab-primary-link" onClick={() => setReloadKey((value) => value + 1)}>다시 불러오기</button>
+        <button type="button" className="lab-primary-link" onClick={handleReload}>다시 불러오기</button>
       </section></div>
     );
   }
