@@ -42,8 +42,8 @@ function ProblemListPage() {
     <div className="lab-page">
       <div className="lab-page__heading">
         <div>
-          <span className="lab-page__eyebrow">AI GENERATED PROBLEMS</span>
-          <h1>AI 문제</h1>
+          <span className="lab-page__eyebrow">JAVA PROBLEMS</span>
+          <h1>Java 문제</h1>
           <p>업로드한 Java 코드의 핵심 문법마다 생성된 AI 코딩 문제입니다.</p>
         </div>
         <Link className="lab-primary-link" to="/problems/new">
@@ -115,7 +115,7 @@ function ProblemListPage() {
             Java 파일을 업로드해 문법별 코딩 문제 3개를 만들어 보세요.
           </span>
           <Link className="lab-primary-link" to="/problems/new">
-            ＋ AI 문제 만들기
+            ＋ Java 문제 만들기
           </Link>
         </section>
       )}

@@ -68,7 +68,7 @@ function ProblemCreatePage() {
       <div className="lab-page__heading">
         <div>
           <span className="lab-page__eyebrow">JAVA AI LEARNING</span>
-          <h1>Java 파일 분석</h1>
+          <h1>새 문제 만들기</h1>
           <p>
             Java 파일을 업로드하면 AI가 핵심 문법 3개를 분석하고 문법별 코딩 문제
             3개를 만듭니다.

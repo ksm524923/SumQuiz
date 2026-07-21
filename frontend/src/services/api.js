@@ -24,9 +24,12 @@ export async function requestApi(endpoint, options = {}) {
     if (error.name === "AbortError") {
       throw new Error(
         "서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.",
+        { cause: error },
       );
     }
-    throw new Error("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.");
+    throw new Error("서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.", {
+      cause: error,
+    });
   } finally {
     window.clearTimeout(timeoutId);
   }

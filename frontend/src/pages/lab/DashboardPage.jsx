@@ -14,8 +14,6 @@ function DashboardPage() {
 
   useEffect(() => {
     let active = true;
-    setIsLoading(true);
-    setErrorMessage("");
 
     getDashboardSummary().then((result) => {
       if (active) {
@@ -29,15 +27,37 @@ function DashboardPage() {
     };
   }, [reloadKey]);
 
+  function handleReload() {
+    setIsLoading(true);
+    setErrorMessage("");
+    setReloadKey((value) => value + 1);
+  }
+
   const cards = [
     {
       label: "생성된 문제",
       value: summary?.generatedProblems ?? 0,
       unit: "개",
+      icon: "▧",
     },
-    { label: "AI 예상 성공", value: summary?.correctAnswers ?? 0, unit: "개" },
-    { label: "보완 필요", value: summary?.incorrectAnswers ?? 0, unit: "개" },
-    { label: "AI 예상 통과율", value: summary?.accuracy ?? 0, unit: "%" },
+    {
+      label: "AI 예상 성공",
+      value: summary?.correctAnswers ?? 0,
+      unit: "개",
+      icon: "✓",
+    },
+    {
+      label: "보완 필요",
+      value: summary?.incorrectAnswers ?? 0,
+      unit: "개",
+      icon: "!",
+    },
+    {
+      label: "AI 예상 통과율",
+      value: summary?.accuracy ?? 0,
+      unit: "%",
+      icon: "◔",
+    },
   ];
 
   if (isLoading) {
@@ -48,7 +68,7 @@ function DashboardPage() {
     return (
       <div className="lab-page"><section className="large-empty">
         <strong>학습 현황을 불러오지 못했습니다.</strong><span>{errorMessage}</span>
-        <button type="button" className="lab-primary-link" onClick={() => setReloadKey((value) => value + 1)}>다시 불러오기</button>
+        <button type="button" className="lab-primary-link" onClick={handleReload}>다시 불러오기</button>
       </section></div>
     );
   }
@@ -57,12 +77,11 @@ function DashboardPage() {
     <div className="lab-page">
       <div className="lab-page__heading">
         <div>
-          <span className="lab-page__eyebrow">HWV CODE LAB</span>
           <h1>
-            안녕하세요{user?.name ? `, ${user.name}님` : ""}
+            안녕하세요, {user?.name || "사용자"}님 <span aria-hidden="true">👋</span>
           </h1>
           <p>
-            Java 파일의 핵심 문법 3개를 분석해 문법별 코딩 문제를 만들어 줍니다.
+            오늘도 꾸준한 학습으로 성장해 보세요.
           </p>
         </div>
 
@@ -75,12 +94,15 @@ function DashboardPage() {
 
       <section className="metric-grid">
         {cards.map((card) => (
-          <article className="metric-card" key={card.label}>
-            <span>{card.label}</span>
-            <strong>
-              {card.value}
-              <small>{card.unit}</small>
-            </strong>
+          <article className="metric-card dashboard-metric-card" key={card.label}>
+            <div>
+              <span>{card.label}</span>
+              <strong>
+                {card.value}
+                <small>{card.unit}</small>
+              </strong>
+            </div>
+            <b aria-hidden="true">{card.icon}</b>
           </article>
         ))}
       </section>
@@ -123,7 +145,7 @@ function DashboardPage() {
         </section>
 
         <section className="surface-card dashboard-guide">
-          <h2>학습 흐름</h2>
+          <h2>Java 학습 흐름</h2>
           <ol>
             <li>
               <b>1</b>
