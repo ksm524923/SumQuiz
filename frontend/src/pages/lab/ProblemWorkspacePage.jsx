@@ -145,6 +145,15 @@ function ProblemWorkspacePage() {
             </div>
           </section>
 
+          <div className="ai-summary-box">
+            <strong>코드 작성 안내</strong>
+            <p>
+              {problem.methodName
+                ? "기본 Solution 클래스는 그대로 두고 solution 메서드 내부의 TODO와 return 부분만 수정해 주세요. 입력·출력 코드는 서버가 자동으로 처리합니다."
+                : "기본으로 제공되는 Main 클래스와 main 메서드는 그대로 두고 solution 메서드 내부만 수정해 주세요."}
+            </p>
+          </div>
+
           <CodeEditor
             value={sourceCode}
             language={language}

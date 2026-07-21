@@ -73,16 +73,22 @@ public class GeminiService {
             3. codingProblems: 탐지 목록 순서대로 문법마다 프로그래머스 형식의 Java 코딩 문제를 하나씩, 정확히 3개 만든다.
             객관식이 아닌 구현 문제이며 title은 80자, description은 1,000자 이내로 작성한다.
             각 코딩 문제에는 서로 다른 테스트를 정확히 3개 넣고 input과 expected를 짧은 문자열로 작성한다.
-            starterCode는 반드시 public class Main과 main 메서드를 포함한다. System.in 입력과 System.out 출력을 사용하되 정답 구현은 TODO로 남긴다.
-            각 tests의 input은 프로그램에 그대로 전달할 표준 입력 문자열이고 expected는 정확한 표준 출력 문자열이다. JSON 배열 표기 대신 공백 또는 줄바꿈으로 구분한다.
+            프로그래머스 방식으로 사용자는 Solution 클래스의 solution 메서드만 구현하고 반환한다.
+            methodName은 항상 solution이다. returnType과 parameterTypes는 실제 starterCode 선언과 정확히 일치해야 한다.
+            지원 타입은 int, long, double, boolean, String과 이 타입들의 1차원 배열만 사용한다.
+            starterCode는 public class Solution과 public solution 메서드를 포함하고 컴파일 가능한 기본 return 값을 넣되 정답 로직은 TODO로 남긴다.
+            main 메서드, Scanner, System.in, System.out은 starterCode에 넣지 않는다. 서버가 숨겨진 실행 코드를 자동으로 붙인다.
+            각 테스트의 arguments는 parameterTypes 순서와 개수가 같은 문자열 배열이다. 숫자와 boolean은 평문, String은 따옴표 없는 값, 배열은 JSON 배열 문자열로 작성한다.
+            input은 화면 표시용 입력, expected는 solution의 기대 반환값을 문자열로 작성한다.
             난이도 규칙은 반드시 지킨다: %s
             JSON 이외의 설명이나 마크다운 코드 블록은 출력하지 않는다.
 
             JSON 형식:
             {"summary":"","grammars":[{"name":"","description":"","rating":3,"evidence":""}],
             "codingProblems":[{"title":"","description":"","requirements":[""],"inputExample":"","outputExample":"",
-            "starterCode":"public class Main { public static void main(String[] args) { ... } }","difficulty":"쉬움|보통|어려움",
-            "tests":[{"name":"기본 케이스","input":"입력값","expected":"기대 출력"}]}]}
+            "methodName":"solution","returnType":"int","parameterTypes":["int"],
+            "starterCode":"public class Solution { public int solution(int value) { /* TODO */ return 0; } }","difficulty":"쉬움|보통|어려움",
+            "tests":[{"name":"기본 케이스","input":"5","arguments":["5"],"expected":"10"}]}]}
 
             탐지 목록: %s
             Java 코드: %s
@@ -136,22 +142,37 @@ public class GeminiService {
                 String inputExample = firstNonBlank(jsonValueText(node.path("inputExample")), jsonValueText(testNodes.get(0).path("input")));
                 String outputExample = firstNonBlank(jsonValueText(node.path("outputExample")), jsonValueText(testNodes.get(0).path("expected")));
                 List<CodingProblemDraft.TestCase> tests = new ArrayList<>();
+                String methodName = requiredText(node, "methodName", "메서드 이름");
+                if (!"solution".equals(methodName)) throw new IllegalStateException("메서드 이름은 solution이어야 합니다.");
+                String returnType = supportedType(requiredText(node, "returnType", "반환형"));
+                List<String> parameterTypes = new ArrayList<>();
+                node.path("parameterTypes").forEach(type -> parameterTypes.add(supportedType(type.asText())));
+                if (parameterTypes.isEmpty()) throw new IllegalStateException(grammar + " 문제의 매개변수 타입이 없습니다.");
                 for (int testIndex = 0; testIndex < 3; testIndex++) {
                     JsonNode test = testNodes.get(testIndex);
+                    List<String> arguments = new ArrayList<>();
+                    test.path("arguments").forEach(argument -> arguments.add(jsonValueText(argument)));
+                    if (arguments.size() != parameterTypes.size()) {
+                        throw new IllegalStateException(grammar + " 문제의 테스트 인자 개수가 매개변수 개수와 다릅니다.");
+                    }
                     tests.add(new CodingProblemDraft.TestCase(testIndex + 1,
                         firstNonBlank(test.path("name").asText(), "테스트 케이스 " + (testIndex + 1)),
                         requiredValue(firstNonBlank(jsonValueText(test.path("input")), jsonValueText(test.path("inputValue")), inputExample), "테스트 입력"),
-                        requiredValue(firstNonBlank(jsonValueText(test.path("expected")), jsonValueText(test.path("expectedOutput")), jsonValueText(test.path("output")), outputExample), "테스트 기대 출력")));
+                        requiredValue(firstNonBlank(jsonValueText(test.path("expected")), jsonValueText(test.path("expectedOutput")), jsonValueText(test.path("output")), outputExample), "테스트 기대 출력"),
+                        arguments));
                 }
                 String starterCode = requiredText(node, "starterCode", "시작 코드");
-                if (!starterCode.matches("(?s).*\\bpublic\\s+class\\s+Main\\b.*")) {
-                    throw new IllegalStateException(grammar + " 문제의 시작 코드에 public class Main이 없습니다.");
+                if (!starterCode.matches("(?s).*\\bpublic\\s+class\\s+Solution\\b.*")) {
+                    throw new IllegalStateException(grammar + " 문제의 시작 코드에 public class Solution이 없습니다.");
+                }
+                if (!starterCode.matches("(?s).*\\bpublic\\s+" + java.util.regex.Pattern.quote(returnType)
+                    + "\\s+solution\\s*\\(.*")) {
+                    throw new IllegalStateException(grammar + " 문제의 solution 선언과 반환형이 일치하지 않습니다.");
                 }
                 result.add(new CodingProblemDraft(grammar, requiredText(node, "title", "제목"),
                     requiredText(node, "description", "설명"), requirements,
                     requiredValue(inputExample, "입력 예시"), requiredValue(outputExample, "출력 예시"),
-                    starterCode,
-                    difficultyForIndex(difficulty, i), tests));
+                    starterCode, difficultyForIndex(difficulty, i), methodName, returnType, parameterTypes, tests));
             }
             return result;
         } catch (Exception e) {
@@ -159,6 +180,14 @@ public class GeminiService {
             if (e instanceof IllegalStateException state) throw state;
             throw new IllegalStateException("Gemini 코딩 문제 결과를 처리하지 못했습니다.", e);
         }
+    }
+
+    private String supportedType(String type) {
+        String normalized = type == null ? "" : type.replace(" ", "").trim();
+        if (!Set.of("int", "long", "double", "boolean", "String", "int[]", "long[]", "double[]", "boolean[]", "String[]").contains(normalized)) {
+            throw new IllegalStateException("지원하지 않는 solution 타입입니다: " + normalized);
+        }
+        return normalized;
     }
 
     private String normalizeDifficulty(String difficulty) {

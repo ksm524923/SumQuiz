@@ -66,7 +66,8 @@ public class ProblemGenerationService {
 
     private CodingProblemDraft toDraft(CodingProblem problem) {
         return new CodingProblemDraft(problem.getGrammarName(), problem.getTitle(), problem.getDescription(), readStrings(problem.getRequirementsJson()),
-            problem.getInputExample(), problem.getOutputExample(), problem.getStarterCode(), problem.getDifficulty(), readTests(problem.getTestsJson()));
+            problem.getInputExample(), problem.getOutputExample(), problem.getStarterCode(), problem.getDifficulty(),
+            problem.getMethodName(), problem.getReturnType(), readStrings(problem.getParameterTypesJson()), readTests(problem.getTestsJson()));
     }
 
     private Map<String, Object> response(CodingProblem problem, boolean solved) {
@@ -74,12 +75,33 @@ public class ProblemGenerationService {
         map.put("category", problem.getGrammarName()); map.put("grammarName", problem.getGrammarName()); map.put("difficulty", problem.getDifficulty());
         map.put("description", problem.getDescription()); map.put("summary", problem.getGrammarName() + " 문법을 활용하는 AI 코딩 문제입니다.");
         map.put("requirements", readStrings(problem.getRequirementsJson())); map.put("inputExample", problem.getInputExample());
-        map.put("outputExample", problem.getOutputExample()); map.put("starterCode", problem.getStarterCode()); map.put("language", "Java");
+        map.put("outputExample", problem.getOutputExample()); map.put("starterCode", starterCode(problem)); map.put("language", "Java");
+        map.put("methodName", problem.getMethodName()); map.put("returnType", problem.getReturnType());
+        map.put("parameterTypes", readStrings(problem.getParameterTypesJson()));
         map.put("tests", readTests(problem.getTestsJson()).stream().map(test -> Map.of("id", test.id(), "name", test.name(), "input", test.input(), "expected", test.expected(), "status", "pending")).toList());
         map.put("solved", solved); map.put("progress", solved ? 100 : 0); return map;
     }
 
     private String write(Object value) { try { return objectMapper.writeValueAsString(value); } catch (Exception e) { throw new IllegalStateException("문제 데이터를 저장하지 못했습니다.", e); } }
+    private String starterCode(CodingProblem problem) {
+        String starterCode = problem.getStarterCode();
+        if (problem.getMethodName() != null && starterCode != null
+            && starterCode.matches("(?s).*\\bpublic\\s+class\\s+Solution\\b.*")) return starterCode;
+        if (starterCode != null && starterCode.matches("(?s).*\\bpublic\\s+class\\s+Main\\b.*")) return starterCode;
+        return """
+            public class Main {
+                public static String solution(String input) {
+                    // TODO: input을 문제 조건에 맞게 처리하세요.
+                    return "";
+                }
+
+                public static void main(String[] args) throws Exception {
+                    String input = new String(System.in.readAllBytes()).trim();
+                    System.out.print(solution(input));
+                }
+            }
+            """;
+    }
     private List<String> readStrings(String json) { try { return objectMapper.readValue(json, new TypeReference<>() {}); } catch (Exception e) { return List.of(); } }
     private List<CodingProblemDraft.TestCase> readTests(String json) { try { return objectMapper.readValue(json, new TypeReference<>() {}); } catch (Exception e) { return List.of(); } }
     private User user(Long id) { return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")); }
