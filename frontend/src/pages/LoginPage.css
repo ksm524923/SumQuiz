@@ -1,241 +1,32 @@
-.login-page {
-  display: grid;
-  min-height: 100vh;
-  padding: 34px;
-  background: #fffaf3;
-  place-items: center;
-}
-
-.login-page__main {
-  display: grid;
-  width: min(1080px, 100%);
-  min-height: 650px;
-  grid-template-columns: 0.94fr 1.06fr;
-  overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #f3dfcf;
-  border-radius: 26px;
-  box-shadow: 0 24px 70px rgb(119 75 37 / 12%);
-  transform: none;
-}
-
-.login-page__introduction {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 650px;
-  overflow: hidden;
-  background: #fff1e3;
-  border-right: 1px solid #f3dfcf;
-}
-
-.login-page__introduction::before,
-.login-page__introduction::after {
-  position: absolute;
-  border: 1px solid rgb(255 107 0 / 10%);
-  border-radius: 50%;
-  content: "";
-}
-
-.login-page__introduction::before {
-  top: -120px;
-  left: -160px;
-  width: 410px;
-  height: 410px;
-}
-
-.login-page__introduction::after {
-  right: -180px;
-  bottom: -210px;
-  width: 480px;
-  height: 480px;
-}
-
-.login-page__brand {
-  position: absolute;
-  z-index: 2;
-  top: 86px;
-  left: 50%;
-  width: 230px;
-  height: 104px;
-  overflow: visible;
-  transform: translateX(-50%);
-}
-
-.login-page__brand img {
-  width: 230px;
-  height: 230px;
-  object-fit: cover;
-  transform: translateY(-60px);
-}
-
-.login-page__illustration {
-  position: absolute;
-  z-index: 2;
-  right: 38px;
-  bottom: 198px;
-  left: 38px;
-  height: 300px;
-}
-
-.login-page__laptop {
-  position: absolute;
-  bottom: 47px;
-  left: 8px;
-  width: 235px;
-  height: 148px;
-  padding: 12px;
-  background: #5f6268;
-  border: 9px solid #25282d;
-  border-radius: 12px;
-  box-shadow: 0 20px 32px rgb(101 60 27 / 18%);
-  transform: rotate(4deg);
-}
-
-.login-page__laptop::after {
-  position: absolute;
-  right: -25px;
-  bottom: -25px;
-  left: -25px;
-  height: 21px;
-  background: #cbc3ba;
-  border-radius: 3px 3px 22px 22px;
-  content: "";
-}
-
-.login-page__laptop span {
-  display: grid;
-  height: 100%;
-  color: #ffffff;
-  background: #f29149;
-  border-radius: 5px;
-  font-size: 47px;
-  font-weight: 800;
-  place-items: center;
-}
-
-.login-page__books {
-  position: absolute;
-  right: 6px;
-  bottom: 47px;
-  width: 165px;
-}
-
-.login-page__books i {
-  display: block;
-  height: 32px;
-  margin-top: 5px;
-  background: #fffdfa;
-  border: 3px solid #ed9552;
-  border-radius: 5px 13px 13px 5px;
-  box-shadow: 0 7px 14px rgb(106 65 31 / 12%);
-}
-
-.login-page__books i:nth-child(2) {
-  width: 88%;
-  margin-left: auto;
-  border-color: #f8b170;
-}
-
-.login-page__books i:nth-child(3) {
-  width: 96%;
-  border-color: #da7a34;
-}
-
-.login-page__mug {
-  position: absolute;
-  right: 28px;
-  bottom: 145px;
-  width: 68px;
-  height: 66px;
-  background: var(--color-primary);
-  border-radius: 7px 7px 22px 22px;
-  box-shadow: 0 12px 22px rgb(160 72 7 / 18%);
-}
-
-.login-page__mug::after {
-  position: absolute;
-  top: 14px;
-  right: -27px;
-  width: 34px;
-  height: 31px;
-  border: 8px solid var(--color-primary);
-  border-left: 0;
-  border-radius: 0 18px 18px 0;
-  content: "";
-}
-
-.login-page__sparkle {
-  position: absolute;
-  color: #ff9a45;
-  font-size: 26px;
-}
-
-.login-page__sparkle--one {
-  top: 20px;
-  right: 72px;
-}
-
-.login-page__sparkle--two {
-  right: 0;
-  bottom: 12px;
-}
-
-.login-page__form-area {
-  display: grid;
-  min-width: 0;
-  min-height: 650px;
-  padding: 56px 70px;
-  background: #ffffff;
-  place-items: center;
-}
-
-@media (max-width: 900px) {
-  .login-page {
-    padding: 22px;
-  }
-
-  .login-page__main {
-    width: min(520px, 100%);
-    min-height: auto;
-    grid-template-columns: 1fr;
-    transform: none;
-  }
-
-  .login-page__introduction {
-    min-height: 190px;
-    border-right: 0;
-    border-bottom: 1px solid #f3dfcf;
-  }
-
-  .login-page__brand {
-    top: 40px;
-  }
-
-  .login-page__illustration {
-    display: none;
-  }
-
-  .login-page__form-area {
-    min-height: auto;
-    padding: 48px 42px;
-  }
-}
-
-@media (max-width: 520px) {
-  .login-page {
-    padding: 0;
-    background: #ffffff;
-  }
-
-  .login-page__main {
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .login-page__form-area {
-    padding: 38px 22px 48px;
-  }
-}
+.login-page { min-height: 100vh; background: #fff; }
+.login-page__main { display: grid; min-height: 100vh; grid-template-columns: 1fr 1fr; }
+.login-page__introduction { position: relative; min-height: 100vh; overflow: hidden; padding: clamp(54px, 8vh, 90px) clamp(48px, 6vw, 92px); background: radial-gradient(circle at 78% 44%, #fff0dc 0, transparent 38%), #fff9f1; }
+.login-page__introduction::after { position: absolute; right: -110px; bottom: -160px; width: 380px; height: 380px; border-radius: 50%; background: rgb(246 151 64 / 8%); content: ""; }
+.login-page__back { position: absolute; z-index: 4; top: 48%; left: -23px; display: grid; width: 58px; height: 58px; color: #3f4347; background: #fff; border: 1px solid #e9e0d6; border-radius: 50%; box-shadow: 0 8px 20px rgb(86 55 29 / 7%); place-items: center; }
+.login-page__back svg { width: 28px; height: 28px; }
+.login-page__copy { position: relative; z-index: 2; max-width: 560px; }
+.login-page__logo { display: block; width: 200px; height: 86px; margin: -17px 0 -5px -5px; object-fit: cover; object-position: center; }
+.login-page__eyebrow { margin: 0 0 clamp(34px, 5vh, 52px); color: #87909c; font-size: 16px; }
+.login-page__copy h1 { margin: 0; color: #20252a; font-size: clamp(40px, 4.2vw, 64px); line-height: 1.28; letter-spacing: -3px; }
+.login-page__copy h1 strong { color: #ed722d; font-weight: 800; }
+.login-page__description { margin-top: 24px; color: #7c8490; font-size: clamp(15px, 1.25vw, 19px); line-height: 1.75; }
+.login-page__visual { position: relative; z-index: 2; display: flex; align-items: flex-end; gap: clamp(24px, 4vw, 56px); margin-top: clamp(42px, 8vh, 76px); }
+.login-page__visual-card { width: clamp(170px, 17vw, 220px); height: 170px; padding: 26px; background: rgb(255 255 255 / 92%); border: 1px solid rgb(240 222 203 / 72%); border-radius: 20px; box-shadow: 0 18px 35px rgb(154 91 38 / 10%); }
+.login-page__visual-card--code { display: grid; grid-template-columns: 58px 1fr; gap: 13px 18px; align-content: center; }
+.login-page__visual-card--code svg { width: 58px; height: 58px; color: #ef792f; grid-row: 1 / 4; }
+.login-page__visual-card--code span { height: 6px; background: #f4dbc3; border-radius: 8px; }
+.login-page__visual-card--code span:nth-of-type(2) { width: 76%; }
+.login-page__visual-card--progress { height: 205px; }
+.login-page__check-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.login-page__check-row svg, .login-page__check-row i { display: grid; width: 21px; height: 21px; padding: 3px; color: #fff; background: #f39543; border-radius: 50%; }
+.login-page__check-row i { background: transparent; border: 2px solid #f5c999; }
+.login-page__check-row span { width: 70%; height: 5px; background: #f5d9bd; border-radius: 8px; }
+.login-page__progress-summary { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 20px; padding-top: 13px; border-top: 1px solid #f2e6da; }
+.login-page__progress-summary svg { width: 38px; height: 38px; color: #f0ad6c; }
+.login-page__progress-summary p { margin: 0; color: #646b73; font-size: 12px; text-align: right; }
+.login-page__progress-summary strong { display: block; color: #ef792f; font-size: 29px; }
+.login-page__dots { position: absolute; bottom: 28px; left: 32px; display: grid; grid-template-columns: repeat(3, 5px); gap: 10px; }
+.login-page__dots i { width: 5px; height: 5px; background: #f3a25e; border-radius: 50%; }
+.login-page__form-area { display: grid; min-width: 0; min-height: 100vh; padding: 60px clamp(54px, 8vw, 130px); background: #fff; place-items: center; }
+@media (max-width: 900px) { .login-page__main { grid-template-columns: 1fr; } .login-page__introduction { min-height: 390px; padding: 48px 42px; } .login-page__copy h1 { font-size: 40px; } .login-page__eyebrow { margin-bottom: 22px; } .login-page__description { margin-top: 16px; } .login-page__visual { display: none; } .login-page__back { top: 24px; left: 22px; width: 46px; height: 46px; } .login-page__logo { margin-left: 52px; } .login-page__form-area { min-height: auto; padding: 58px 30px 70px; } }
+@media (max-width: 520px) { .login-page__introduction { min-height: 310px; padding: 38px 24px; } .login-page__logo { width: 150px; height: 64px; margin-left: 48px; } .login-page__eyebrow { margin-left: 52px; font-size: 13px; } .login-page__copy h1 { font-size: 31px; letter-spacing: -1.8px; } .login-page__description { font-size: 14px; } .login-page__dots { display: none; } }
