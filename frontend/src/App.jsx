@@ -10,11 +10,13 @@ import ProblemWorkspacePage from "./pages/lab/ProblemWorkspacePage";
 import ProfilePage from "./pages/lab/ProfilePage";
 import StatisticsPage from "./pages/lab/StatisticsPage";
 import WrongNotesPage from "./pages/lab/WrongNotesPage";
+import WelcomePage from "./pages/WelcomePage";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<WelcomePage />} />
+      <Route path="/welcome" element={<WelcomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
 
@@ -33,7 +35,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
