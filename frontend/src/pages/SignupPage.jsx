@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { FileUp, ListChecks, ScanSearch } from "lucide-react";
 
 import SignupForm from "../components/signup/SignupForm";
 import "./SignupPage.css";
@@ -30,15 +31,24 @@ function SignupPage() {
 
           <div className="signup-page__features">
             <div>
-              <span>1</span>
+              <span className="signup-page__feature-icon">
+                <FileUp aria-hidden="true" size={25} strokeWidth={1.8} />
+                <b>1</b>
+              </span>
               <p><strong>파일 업로드</strong>Java 파일을 간편하게 등록하세요.</p>
             </div>
             <div>
-              <span>2</span>
+              <span className="signup-page__feature-icon">
+                <ScanSearch aria-hidden="true" size={25} strokeWidth={1.8} />
+                <b>2</b>
+              </span>
               <p><strong>문법 분석</strong>AI가 코드의 핵심 문법을 분석해 드려요.</p>
             </div>
             <div>
-              <span>3</span>
+              <span className="signup-page__feature-icon">
+                <ListChecks aria-hidden="true" size={25} strokeWidth={1.8} />
+                <b>3</b>
+              </span>
               <p><strong>맞춤 퀴즈</strong>분석 결과를 바탕으로 맞춤 퀴즈를 풀어요.</p>
             </div>
           </div>
