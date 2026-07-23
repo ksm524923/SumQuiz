@@ -5,7 +5,12 @@ import { useLanguage } from "../../i18n/LanguageContext";
 import "./LabPages.css";
 
 function StatisticsPage() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
+  const copy = {
+    ko: { title: "학습 통계", subtitle: "AI 코딩 문제 생성과 예상 테스트 통과 기록을 확인하세요.", failed: "학습 통계를 불러오지 못했습니다.", generated: "생성된 문제", success: "AI 예상 성공", improve: "보완 필요", count: "개", overall: "전체 AI 예상 통과율", accuracy: "정답률", reviews: "AI 코드 검토", times: "회 기준", category: "문법별 예상 통과율", categoryEmpty: "문제를 풀면 문법별 정답률이 표시됩니다.", weekly: "최근 7일 일별 정답률", weekDays: ["월", "화", "수", "목", "금", "토", "일"], daySuffix: "요일", correct: "정답" },
+    en: { title: "Learning statistics", subtitle: "Review generated AI coding problems and expected test results.", failed: "We couldn't load your learning statistics.", generated: "Generated problems", success: "Expected passes", improve: "Needs improvement", count: "", overall: "Overall expected pass rate", accuracy: "Accuracy", reviews: "Based on", times: " AI code reviews", category: "Expected pass rate by concept", categoryEmpty: "Solve problems to see accuracy by Java concept.", weekly: "Daily accuracy for the last 7 days", weekDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], daySuffix: "", correct: "correct" },
+    ja: { title: "学習統計", subtitle: "AIコーディング問題の生成数と予想テスト合格記録を確認できます。", failed: "学習統計を読み込めませんでした。", generated: "生成した問題", success: "AI予想成功", improve: "改善が必要", count: "問", overall: "全体AI予想合格率", accuracy: "正答率", reviews: "AIコードレビュー", times: "回基準", category: "文法別予想合格率", categoryEmpty: "問題を解くと文法別の正答率が表示されます。", weekly: "直近7日間の日別正答率", weekDays: ["月", "火", "水", "木", "金", "土", "日"], daySuffix: "曜日", correct: "正解" },
+  }[language];
   const [statistics, setStatistics] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,7 +43,7 @@ function StatisticsPage() {
   const accuracy =
     statistics?.accuracy ??
     (answerCount ? Math.round((correctAnswers / answerCount) * 100) : 0);
-  const weekDays = ["월", "화", "수", "목", "금", "토", "일"];
+  const weekDays = copy.weekDays;
   const weeklyAttempts = Array.from(
     { length: 7 },
     (_, index) => statistics?.weeklyAttempts?.[index] ?? 0,
@@ -75,7 +80,7 @@ function StatisticsPage() {
   if (errorMessage && !statistics) {
     return (
       <div className="lab-page"><section className="large-empty">
-        <strong>학습 통계를 불러오지 못했습니다.</strong><span>{errorMessage}</span>
+        <strong>{copy.failed}</strong><span>{errorMessage}</span>
         <button type="button" className="lab-primary-link" onClick={handleReload}>{t("retry")}</button>
       </section></div>
     );
@@ -86,35 +91,35 @@ function StatisticsPage() {
       <div className="lab-page__heading">
         <div>
           <span className="lab-page__eyebrow">HWV CODE LAB</span>
-          <h1>학습 통계</h1>
-          <p>AI 코딩 문제 생성과 예상 테스트 통과 기록을 확인하세요.</p>
+          <h1>{copy.title}</h1>
+          <p>{copy.subtitle}</p>
         </div>
       </div>
 
       <section className="metric-grid statistics-metrics">
         <article className="metric-card">
-          <span>생성된 문제</span>
+          <span>{copy.generated}</span>
           <strong>
-            {statistics?.generatedProblems ?? 0}<small>개</small>
+            {statistics?.generatedProblems ?? 0}<small>{copy.count}</small>
           </strong>
         </article>
         <article className="metric-card">
-          <span>AI 예상 성공</span>
+          <span>{copy.success}</span>
           <strong>
-            {correctAnswers}<small>개</small>
+            {correctAnswers}<small>{copy.count}</small>
           </strong>
         </article>
         <article className="metric-card">
-          <span>보완 필요</span>
+          <span>{copy.improve}</span>
           <strong>
-            {incorrectAnswers}<small>개</small>
+            {incorrectAnswers}<small>{copy.count}</small>
           </strong>
         </article>
       </section>
 
       <div className="statistics-grid">
         <section className="surface-card accuracy-card">
-          <h2>전체 AI 예상 통과율</h2>
+          <h2>{copy.overall}</h2>
           <div
             className="accuracy-ring"
             style={{
@@ -123,14 +128,14 @@ function StatisticsPage() {
           >
             <div>
               <strong>{accuracy}%</strong>
-              <span>정답률</span>
+              <span>{copy.accuracy}</span>
             </div>
           </div>
-          <p>AI 코드 검토 {answerCount}회 기준</p>
+          <p>{copy.reviews} {answerCount}{copy.times}</p>
         </section>
 
         <section className="surface-card category-chart">
-          <h2>문법별 예상 통과율</h2>
+          <h2>{copy.category}</h2>
           {statistics?.categoryAccuracy?.length ? (
             <div>
               {statistics.categoryAccuracy.map((item) => (
@@ -145,13 +150,13 @@ function StatisticsPage() {
             </div>
           ) : (
             <div className="compact-empty">
-              문제를 풀면 문법별 정답률이 표시됩니다.
+              {copy.categoryEmpty}
             </div>
           )}
         </section>
 
         <section className="surface-card weekly-chart">
-          <h2>최근 7일 일별 정답률</h2>
+          <h2>{copy.weekly}</h2>
           <div className="weekly-chart__line">
             <svg
               viewBox="0 0 1200 220"
@@ -180,7 +185,7 @@ function StatisticsPage() {
                   </text>
                   <text className="weekly-chart__emoji" x={point.x} y={point.y + 6}>{point.emoji}</text>
                   <text className="weekly-chart__day" x={point.x} y="207">{point.day}</text>
-                  <title>{`${point.day}요일: ${point.correct}/${point.total} 정답, 정답률 ${point.accuracy}%`}</title>
+                  <title>{`${point.day}${copy.daySuffix}: ${point.correct}/${point.total} ${copy.correct}, ${copy.accuracy} ${point.accuracy}%`}</title>
                 </g>
               ))}
             </svg>
