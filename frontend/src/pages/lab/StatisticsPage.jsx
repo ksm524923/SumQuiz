@@ -11,6 +11,22 @@ function StatisticsPage() {
     en: { title: "Learning statistics", subtitle: "Review generated AI coding problems and expected test results.", failed: "We couldn't load your learning statistics.", generated: "Generated problems", success: "Expected passes", improve: "Needs improvement", count: "", overall: "Overall expected pass rate", accuracy: "Accuracy", reviews: "Based on", times: " AI code reviews", category: "Expected pass rate by concept", categoryEmpty: "Solve problems to see accuracy by Java concept.", weekly: "Daily accuracy for the last 7 days", weekDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], daySuffix: "", correct: "correct" },
     ja: { title: "学習統計", subtitle: "AIコーディング問題の生成数と予想テスト合格記録を確認できます。", failed: "学習統計を読み込めませんでした。", generated: "生成した問題", success: "AI予想成功", improve: "改善が必要", count: "問", overall: "全体AI予想合格率", accuracy: "正答率", reviews: "AIコードレビュー", times: "回基準", category: "文法別予想合格率", categoryEmpty: "問題を解くと文法別の正答率が表示されます。", weekly: "直近7日間の日別正答率", weekDays: ["月", "火", "水", "木", "金", "土", "日"], daySuffix: "曜日", correct: "正解" },
   }[language];
+  const grammarLabels = {
+    ko: {},
+    en: {
+      "조건문": "Conditionals", "배열": "Arrays", "메서드 선언": "Method declarations", "클래스 선언": "Class declarations",
+      "for문": "For loops", "향상된 for문": "Enhanced for loops", "while문": "While loops", "반복문": "Loops",
+      "예외 처리": "Exception handling", "컬렉션": "Collections", "제네릭": "Generics", "상속": "Inheritance",
+      "인터페이스": "Interfaces", "람다식": "Lambda expressions", "스트림": "Streams",
+    },
+    ja: {
+      "조건문": "条件文", "배열": "配列", "메서드 선언": "メソッド宣言", "클래스 선언": "クラス宣言",
+      "for문": "for文", "향상된 for문": "拡張for文", "while문": "while文", "반복문": "繰り返し文",
+      "예외 처리": "例外処理", "컬렉션": "コレクション", "제네릭": "ジェネリクス", "상속": "継承",
+      "인터페이스": "インターフェース", "람다식": "ラムダ式", "스트림": "ストリーム",
+    },
+  }[language];
+  const displayGrammar = (name) => grammarLabels[name?.trim()] || name;
   const [statistics, setStatistics] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -140,7 +156,7 @@ function StatisticsPage() {
             <div>
               {statistics.categoryAccuracy.map((item) => (
               <article key={item.name}>
-                <span>{item.name}</span>
+                <span>{displayGrammar(item.name)}</span>
                 <div>
                   <b style={{ width: item.value + "%" }} />
                 </div>
