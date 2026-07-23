@@ -1,4 +1,5 @@
 import { getUserId } from "./session";
+import { getSavedLanguage } from "../i18n/LanguageContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://sumquiz.onrender.com";
 
@@ -24,7 +25,7 @@ export function getProblem(problemId) {
 export function submitSolution({ problemId, sourceCode }) {
   return request("/api/submissions", {
     method: "POST",
-    body: JSON.stringify({ userId: getUserId(), problemId, sourceCode }),
+    body: JSON.stringify({ userId: getUserId(), problemId, sourceCode, language: getSavedLanguage() }),
   });
 }
 

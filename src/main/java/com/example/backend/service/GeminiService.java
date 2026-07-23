@@ -64,11 +64,14 @@ public class GeminiService {
         return objectMapper.readTree(cleaned.substring(start, end + 1));
     }
 
-    public GeneratedLearningContent generateAll(String code, String requestedDifficulty) {
+    public GeneratedLearningContent generateAll(String code, String requestedDifficulty, String language) {
         List<JavaSyntaxDetector.Detected> detected = syntaxDetector.detect(code);
         List<JavaSyntaxDetector.Detected> selected = detected.subList(0, 3);
         String difficulty = normalizeDifficulty(requestedDifficulty);
+        String responseLanguage = responseLanguage(language);
         String prompt = """
+            모든 설명, 문제 제목, 문제 본문, 제약 조건과 힌트는 반드시 %s로 작성하라.
+            Java 코드, 클래스명, 메서드명, 변수명, JSON 필드명과 테스트 값은 번역하지 마라.
             다음 Java 코드에 대한 학습 콘텐츠를 한 번에 생성하라.
             서버가 실제 코드에서 탐지한 문법 3개만 사용하고 목록 밖의 Java 일반 지식은 추가하지 않는다.
 
@@ -108,7 +111,7 @@ public class GeminiService {
 
             탐지 목록: %s
             Java 코드: %s
-            """.formatted(difficultyInstruction(difficulty), objectMapper.valueToTree(selected), code);
+            """.formatted(responseLanguage, difficultyInstruction(difficulty), objectMapper.valueToTree(selected), code);
         try {
             JsonNode root = readGeminiJson(callGemini(prompt));
             List<JavaAnalysisResponse.Grammar> grammars = new ArrayList<>();
@@ -135,6 +138,14 @@ public class GeminiService {
             log.error("Gemini 통합 학습 결과 처리 실패: {}", e.getClass().getSimpleName(), e);
             throw new IllegalStateException("Gemini 통합 학습 결과를 처리하지 못했습니다.", e);
         }
+    }
+
+    private String responseLanguage(String language) {
+        return switch (language == null ? "ko" : language.trim().toLowerCase()) {
+            case "en" -> "English";
+            case "ja" -> "Japanese";
+            default -> "Korean";
+        };
     }
 
     private String safeErrorResponse(WebClientResponseException exception) {

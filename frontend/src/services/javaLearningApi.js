@@ -1,4 +1,5 @@
 import { getUserId } from "./session";
+import { getSavedLanguage } from "../i18n/LanguageContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://sumquiz.onrender.com";
 
@@ -28,6 +29,7 @@ export async function analyzeJavaFile(file, difficulty = "균형") {
   formData.append("file", file);
   formData.append("userId", String(userId));
   formData.append("difficulty", difficulty);
+  formData.append("language", getSavedLanguage());
   const result = await parseResponse(await fetch(`${API_BASE_URL}/java/analyze`, { method: "POST", body: formData }));
   if (result?.grammars?.length !== 3) throw new Error("AI 분석 결과에 핵심 문법 3개가 필요합니다.");
   return result;

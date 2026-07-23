@@ -10,6 +10,7 @@
   z-index: 10;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 64px;
   padding: 0 max(5vw, 46px);
   background: rgba(255, 253, 249, 0.94);

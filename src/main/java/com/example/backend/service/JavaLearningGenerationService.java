@@ -37,18 +37,19 @@ public class JavaLearningGenerationService {
     }
 
     @Transactional
-    public JavaAnalysisResponse generateAll(Long userId, String code, String difficulty) {
+    public JavaAnalysisResponse generateAll(Long userId, String code, String difficulty, String language) {
         if (userId == null) throw new IllegalArgumentException("로그인 후 Java 파일을 분석해 주세요.");
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         String normalizedCode = code.replace("\r\n", "\n").replace('\r', '\n');
-        String sourceHash = hash(GENERATION_RULE_VERSION + "\n" + normalizedCode);
+        String normalizedLanguage = normalizeLanguage(language);
+        String sourceHash = hash(GENERATION_RULE_VERSION + "\n" + normalizedLanguage + "\n" + normalizedCode);
         JavaAnalysisCache cached = cacheRepository.findByUserAndSourceHash(user, sourceHash).orElse(null);
         if (cached != null) {
             return new JavaAnalysisResponse(cached.getSummary(), readGrammars(cached.getGrammarsJson()), cached.getSourceCode());
         }
 
-        GeneratedLearningContent generated = geminiService.generateAll(normalizedCode, difficulty);
+        GeneratedLearningContent generated = geminiService.generateAll(normalizedCode, difficulty, normalizedLanguage);
 
         List<CodingProblem> savedProblems = problemRepository.saveAll(generated.codingProblems().stream()
             .map(draft -> toEntity(user, draft)).toList());
@@ -61,6 +62,14 @@ public class JavaLearningGenerationService {
         cache.setProblemIdsJson(write(savedProblems.stream().map(CodingProblem::getId).toList()));
         cacheRepository.save(cache);
         return generated.analysis();
+    }
+
+    private String normalizeLanguage(String language) {
+        return switch (language == null ? "ko" : language.trim().toLowerCase()) {
+            case "en" -> "en";
+            case "ja" -> "ja";
+            default -> "ko";
+        };
     }
 
     private CodingProblem toEntity(User user, CodingProblemDraft draft) {
