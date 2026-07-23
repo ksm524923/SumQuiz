@@ -1,29 +1,65 @@
 .signup-page {
   min-height: 100vh;
-  background-color: var(--color-background);
+  color: var(--color-text);
+  background: #fffaf4;
+}
+
+.signup-page__header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 max(5vw, 46px);
+  background: rgba(255, 253, 249, 0.94);
+  border-bottom: 1px solid #f0dfce;
+}
+
+.signup-page__logo {
+  display: block;
+  width: 100px;
+  height: 48px;
+  overflow: hidden;
+}
+
+.signup-page__logo img {
+  display: block;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  object-position: center 51%;
+  transform: translateY(-26px);
 }
 
 .signup-page__main {
   display: grid;
-  grid-template-columns: minmax(320px, 500px) minmax(350px, 430px);
+  grid-template-columns: minmax(390px, 570px) minmax(360px, 460px);
   align-items: center;
   justify-content: center;
-  gap: 80px;
+  gap: clamp(55px, 7vw, 110px);
+  min-height: calc(100vh - 122px);
+  padding: 28px 6vw 20px;
+}
 
-  min-height: calc(100vh - var(--header-height));
-  padding: 50px 30px;
+.signup-page__introduction {
+  padding-left: 10px;
 }
 
 .signup-page__eyebrow {
-  margin-bottom: 12px;
+  margin-bottom: 18px;
   color: var(--color-primary);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
 }
 
 .signup-page__introduction h1 {
-  font-size: clamp(38px, 5vw, 58px);
-  line-height: 1.25;
+  margin: 0;
+  color: #202735;
+  font-size: clamp(38px, 3.5vw, 50px);
+  line-height: 1.35;
+  letter-spacing: -2px;
 }
 
 .signup-page__introduction h1 span {
@@ -31,83 +67,107 @@
 }
 
 .signup-page__description {
-  max-width: 500px;
   margin-top: 22px;
-
-  color: var(--color-text-light);
-  font-size: 16px;
-  line-height: 1.8;
+  color: #7c8491;
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .signup-page__features {
   display: flex;
   flex-direction: column;
-  gap: 17px;
-  margin-top: 32px;
+  gap: 15px;
+  margin-top: 28px;
 }
 
 .signup-page__features > div {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 15px;
 }
 
-.signup-page__features span {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-
-  width: 42px;
-  height: 42px;
-
+.signup-page__feature-icon {
+  position: relative;
+  display: grid;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
   color: var(--color-primary);
-  background-color: var(--color-primary-light);
-  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #f2dfce;
+  border-radius: 14px;
+  box-shadow: 0 9px 22px rgba(125, 72, 31, 0.09);
+  place-items: center;
+}
+
+.signup-page__feature-icon b {
+  position: absolute;
+  right: -7px;
+  bottom: -7px;
+  display: grid;
+  width: 19px;
+  height: 19px;
+  color: #ffffff;
+  background: var(--color-primary);
+  border: 2px solid #fffaf4;
+  border-radius: 50%;
+  place-items: center;
+  font-size: 9px;
   font-weight: 800;
 }
 
 .signup-page__features p {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-
-  color: var(--color-text-light);
-  font-size: 13px;
+  gap: 5px;
+  margin: 0;
+  color: #838b96;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 .signup-page__features strong {
-  color: var(--color-text);
+  color: #202735;
   font-size: 15px;
 }
 
-@media (max-width: 950px) {
-  .signup-page__main {
-    grid-template-columns: 1fr;
-    gap: 45px;
-  }
-
-  .signup-page__introduction {
-    max-width: 600px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .signup-page__features {
-    max-width: 480px;
-    margin-right: auto;
-    margin-left: auto;
-    text-align: left;
-  }
-
-  .signup-form {
-    margin: 0 auto;
-  }
+.signup-page__footer {
+  padding: 2px 20px 14px;
+  color: #838b96;
+  text-align: center;
+  font-size: 13px;
 }
 
-@media (max-width: 500px) {
+.signup-page__footer div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 5px;
+  color: #424852;
+}
+
+.signup-page__footer span {
+  width: 1px;
+  height: 13px;
+  background: #bdb5ad;
+}
+
+@media (max-width: 1000px) {
   .signup-page__main {
-    padding: 32px 18px;
+    grid-template-columns: minmax(320px, 560px);
+    gap: 42px;
   }
+
+  .signup-page__introduction { text-align: center; }
+  .signup-page__description br { display: none; }
+  .signup-page__features { max-width: 470px; margin-right: auto; margin-left: auto; text-align: left; }
+}
+
+@media (max-width: 560px) {
+  .signup-page__header { height: 60px; padding: 0 20px; }
+  .signup-page__main { padding: 38px 18px 28px; }
+  .signup-page__introduction { padding: 0; }
+  .signup-page__introduction h1 { font-size: 36px; }
+  .signup-page__description { font-size: 15px; }
 }

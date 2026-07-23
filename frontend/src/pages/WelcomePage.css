@@ -1,0 +1,258 @@
+.introduction-page {
+  --intro-primary: #ec5e27;
+  --intro-primary-hover: #d94f1d;
+  --intro-text: #222222;
+  --intro-secondary: #666666;
+  --intro-border: #ececec;
+  min-height: 100vh;
+  color: var(--intro-text);
+  background: #fff8f2;
+  animation: introduction-fade 0.55s ease both;
+}
+
+.introduction-page__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(360px, 2fr);
+  min-height: 100vh;
+}
+
+.introduction-page__content {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(28px, 4vw, 58px) clamp(34px, 5.5vw, 88px);
+}
+
+.introduction-page__header {
+  width: 112px;
+  height: 56px;
+  overflow: hidden;
+}
+
+.introduction-page__header img {
+  display: block;
+  width: 112px;
+  height: 112px;
+  object-fit: cover;
+  object-position: center 51%;
+  transform: translateY(-28px);
+}
+
+.introduction-page__hero {
+  margin-top: auto;
+  padding: 45px 0 42px;
+}
+
+.introduction-page__eyebrow {
+  margin-bottom: 18px;
+  color: var(--intro-primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.introduction-page__hero h1 {
+  margin: 0;
+  font-size: clamp(42px, 4.1vw, 65px);
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  line-height: 1.22;
+}
+
+.introduction-page__hero h1 span { color: var(--intro-primary); }
+
+.introduction-page__description {
+  margin-top: 25px;
+  color: var(--intro-secondary);
+  font-size: clamp(14px, 1.1vw, 17px);
+  line-height: 1.8;
+}
+
+.introduction-page__cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: auto;
+}
+
+.introduction-page__card {
+  min-height: 174px;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid var(--intro-border);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(60, 40, 20, 0.035);
+  opacity: 0;
+  transform: translateY(12px);
+  animation: introduction-card 0.55s var(--card-delay) ease forwards;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.introduction-page__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 38px rgba(78, 47, 23, 0.09);
+}
+
+.introduction-page__card > span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  color: var(--intro-primary);
+  background: #fff2eb;
+  border-radius: 13px;
+  place-items: center;
+}
+
+.introduction-page__card h2 { margin: 20px 0 8px; font-size: 15px; }
+.introduction-page__card p { color: var(--intro-secondary); font-size: 12px; line-height: 1.65; }
+
+.introduction-page__visual {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: clamp(42px, 5vw, 75px);
+  background: rgba(255, 255, 255, 0.56);
+  border-left: 1px solid var(--intro-border);
+}
+
+.introduction-page__large-logo {
+  position: relative;
+  width: min(31vw, 450px);
+  height: min(13vw, 190px);
+  object-fit: cover;
+  object-position: center 51%;
+  animation: introduction-float 3.8s ease-in-out infinite;
+}
+
+.introduction-page__server {
+  position: relative;
+  width: min(100%, 350px);
+  margin-top: 18px;
+  text-align: center;
+}
+
+.introduction-page__server p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: var(--intro-secondary);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+
+.introduction-page__server i {
+  width: 8px;
+  height: 8px;
+  background: var(--intro-primary);
+  border-radius: 50%;
+}
+
+.introduction-page__server .is-preparing i {
+  box-shadow: 0 0 0 5px rgba(236, 94, 39, 0.12);
+  animation: introduction-pulse 1.2s ease-in-out infinite;
+}
+
+.introduction-page__server .is-ready i {
+  background: #39a64a;
+  box-shadow: 0 0 0 5px rgba(57, 166, 74, 0.12);
+}
+
+.introduction-page__server strong { display: block; margin-top: 8px; font-size: 24px; }
+
+.introduction-page__progress-area {
+  width: min(100%, 350px);
+  margin-top: 38px;
+}
+
+.introduction-page__progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: var(--intro-secondary);
+  font-size: 11px;
+}
+
+.introduction-page__progress-label b { color: var(--intro-text); }
+
+.introduction-page__progress-track {
+  height: 5px;
+  overflow: hidden;
+  background: #eee7e2;
+  border-radius: 999px;
+}
+
+.introduction-page__progress-track span {
+  display: block;
+  height: 100%;
+  background: var(--intro-primary);
+  border-radius: inherit;
+  transition: width 0.65s ease;
+}
+
+.introduction-page__button {
+  width: min(100%, 350px);
+  height: 50px;
+  margin-top: 25px;
+  color: #ffffff;
+  background: var(--intro-primary);
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 750;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.introduction-page__button:not(:disabled):hover {
+  background: var(--intro-primary-hover);
+  transform: translateY(-1px);
+}
+
+.introduction-page__button:disabled {
+  color: #9e9691;
+  background: #eae5e1;
+  cursor: wait;
+}
+
+.introduction-page__notice {
+  width: min(100%, 350px);
+  margin-top: 13px;
+  color: #8a827d;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+@keyframes introduction-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes introduction-card { to { opacity: 1; transform: translateY(0); } }
+@keyframes introduction-float { 50% { transform: translateY(-3px); } }
+@keyframes introduction-pulse { 50% { opacity: 0.35; transform: scale(0.8); } }
+
+@media (max-width: 1100px) {
+  .introduction-page__content { padding-right: 38px; padding-left: 38px; }
+  .introduction-page__cards { grid-template-columns: 1fr; }
+  .introduction-page__card { min-height: 0; padding: 18px; }
+  .introduction-page__card h2 { margin-top: 13px; }
+}
+
+@media (max-width: 768px) {
+  .introduction-page__layout { grid-template-columns: 1fr; }
+  .introduction-page__visual { order: -1; min-height: 430px; border-bottom: 1px solid var(--intro-border); border-left: 0; }
+  .introduction-page__large-logo { width: min(76vw, 360px); height: min(31vw, 148px); }
+  .introduction-page__server { margin-top: 14px; }
+  .introduction-page__content { padding: 34px 22px 48px; }
+  .introduction-page__hero { padding: 45px 0 34px; }
+  .introduction-page__hero h1 { font-size: clamp(38px, 10vw, 52px); }
+  .introduction-page__description br { display: none; }
+  .introduction-page__cards { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .introduction-page,
+  .introduction-page__card,
+  .introduction-page__large-logo,
+  .introduction-page__server .is-preparing i { animation: none; opacity: 1; transform: none; }
+  .introduction-page__progress-track span { transition: none; }
+}

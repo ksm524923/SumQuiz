@@ -1,5 +1,30 @@
+html,
+body,
+#root {
+  background-color: var(--color-background);
+}
+
+html {
+  scrollbar-color: #a97857 var(--color-background);
+}
+
+html::-webkit-scrollbar {
+  width: 12px;
+}
+
+html::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #a97857;
+  border: 3px solid var(--color-background);
+  border-radius: 999px;
+}
+
 body {
   min-height: 100vh;
+  min-width: 320px;
   color: var(--color-text);
   background-color: var(--color-background);
   font-family:
@@ -7,10 +32,24 @@ body {
     "Noto Sans KR",
     Arial,
     sans-serif;
+  font-size: clamp(14px, 0.25vw + 13px, 16px);
+  overflow-wrap: anywhere;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 button {
   border: none;
+}
+
+button,
+a {
+  word-break: keep-all;
 }
 
 input,

@@ -1,83 +1,213 @@
-# SumQuiz
+## NAVER OGQ AI
 
-## 템플릿 필수 준수
+### HWV (Help With Vision)
 
-### 배경
-정보의 홍수 속에서 대학생, 직장인, 수험생들은 방대한 양의 전공 서적, PDF, 뉴스 기사를 소화해야 하는 부담을 안고 있다.
+> **AI 기반 Java 맞춤형 학습 플랫폼**
 
-### 문제점
-- **시간 부족**: 긴 텍스트를 읽고 핵심을 파악하는 데 너무 많은 시간이 소요됨.
-- **능동적 학습의 어려움**: 단순히 읽는 것(수동적 학습)은 기억에 오래 남지 않으며, 스스로 퀴즈를 만들어 복습하기에는 번거로움.
-- **지속성 결여**: 에빙하우스의 망각 곡선에 따르면 인간은 학습 후 복습하지 않으면 지식을 빠르게 망각하지만, 체계적으로 복습 타이밍을 챙기기 어려움.
+HWV는 사용자가 업로드한 Java 코드를 AI가 분석하여 핵심 문법을 추출하고, 이를 기반으로 맞춤형 코딩 문제를 생성하는 AI 기반 학습 플랫폼입니다.
+
+생성된 문제를 실제 Java 환경에서 컴파일 및 실행하여 채점하고, 제출 기록과 학습 결과를 관리함으로써 학습자의 지속적인 성장을 지원합니다.
+
+#### 배경
+
+프로그래밍 학습에서는 단순히 문법을 익히는 것보다 직접 코드를 작성하고 피드백을 받는 과정이 중요합니다.
+
+하지만 기존 학습 플랫폼은 모든 사용자에게 동일한 문제를 제공하기 때문에 개인의 학습 수준과 작성한 코드에 맞는 맞춤형 학습이 어렵습니다.
+
+또한 자신이 작성한 코드를 기반으로 부족한 개념을 파악하고 반복적으로 학습할 수 있는 환경이 부족하여 학습 효율이 떨어지는 문제가 있습니다.
+
+#### 문제점
+
+##### 1. 획일적인 학습 환경
+
+기존 플랫폼은 정형화된 문제만 제공하기 때문에 개인의 수준과 학습 내용에 맞는 실습이 어렵습니다.
+
+##### 2. 코드 기반 피드백 부족
+
+사용자가 작성한 Java 코드를 분석하여 어떤 문법을 사용했고 어떤 개념을 더 학습해야 하는지 알려주는 맞춤형 피드백이 부족합니다.
+
+##### 3. 지속적인 학습 관리의 어려움
+
+문제를 해결한 이후에도 제출 기록과 학습 결과를 체계적으로 관리하기 어려워 반복 학습과 성장을 이어가기 어렵습니다.
+
+
+#### 해결 방안
+
+HWV는 사용자가 업로드한 Java 파일을 AI가 분석하여 핵심 문법을 추출하고, 이를 기반으로 개인 맞춤형 코딩 문제를 생성합니다.
+
+생성된 문제는 실제 Java 컴파일러를 이용하여 실행 및 채점되며, 제출 결과와 학습 기록을 저장하여 학습자의 성장 과정을 지속적으로 관리합니다.
+
+또한 Render 무료 서버의 초기 지연 문제를 해결하기 위해 로그인 전 프로젝트 소개 화면을 제공하고, 백그라운드에서 서버를 미리 활성화하여 보다 자연스러운 사용자 경험을 제공합니다.
+
+#### 주요 기능
+
+- Java 코드 업로드 및 분석
+- AI 기반 코드 요약
+- 핵심 문법 자동 추출
+- 맞춤형 코딩 문제 생성
+- 실제 Java 컴파일 및 실행
+- 테스트 케이스 기반 자동 채점
+- 제출 기록 관리
+- 학습 통계 제공
+- 프로젝트 소개 및 서버 상태 확인
+
+#### 시스템 아키텍처
+
+##### Client (Frontend)
+
+- Java 파일 업로드
+- AI 분석 결과 조회
+- 생성된 코딩 문제 풀이
+- 코드 제출
+- 제출 결과 확인
+- 학습 통계 조회
+
+##### Server (Backend)
+
+- Java 코드 분석
+- 핵심 문법 추출
+- Gemini API 호출
+- 맞춤형 문제 생성
+- Java 코드 컴파일 및 실행
+- 테스트 케이스 자동 채점
+- 결과 저장
+
+##### AI Pipeline
+
+- Java 코드 분석
+- 코드 요약 생성
+- 핵심 문법 생성
+- 맞춤형 코딩 문제 생성
+- 테스트 케이스 생성
+
+##### Database
+
+- 사용자 정보
+- 분석 결과
+- 생성된 문제
+- 제출 기록
+- 학습 통계
 
 ---
 
-### 해결 방안 (SumQuiz의 가치)
-사용자가 자료(PDF/링크)만 업로드하면 AI가 다음을 원스톱으로 제공하여 학습 효율을 극대화함:
-1. 핵심 요약
-2. 맞춤형 퀴즈 생성
-3. 망각 곡선 기반 복습 알림
-4. 누적 데이터 기반 학습 분석
+#### 사용 스택
+
+| 분류 | 기술 |
+|------|------|
+| Backend | Spring Boot 4.1.0, Java 17, Spring Web, Spring Data JPA, Spring WebFlux |
+| Frontend | React 19, JavaScript, CSS |
+| Database | MySQL |
+| AI | Google Gemini 3.1 Lite |
+| Deployment | Render, Vercel |
+| API Documentation | Springdoc OpenAPI (Swagger UI) |
+| Design | Figma |
+| IDE / Tools | IntelliJ IDEA, Visual Studio Code, GitHub, ChatGPT, Claude, Codex |
 
 ---
 
-### 🏗️ 시스템 아키텍처
+#### 실행 방법
 
-#### 데이터 및 서비스 흐름
-1. **Client (Frontend)**: 사용자가 PDF 업로드 또는 URL 입력 → 결과 조회 및 퀴즈 풀이
-2. **Server (Backend)**: 요청을 받아 PDF 텍스트 추출(Parser) 또는 웹 크롤링 수행
-3. **AI Pipeline**: 추출된 텍스트를 AI 모델(LLM)에 전달하여 요약 및 퀴즈(JSON 형태) 생성. 기존 데이터와 연계를 위해 임베딩 후 Vector DB에 저장
-4. **Database**: 사용자 정보, 퀴즈 기록, 오답 노트를 저장하고 Scheduler(Celery 등)를 통해 망각 곡선 주기에 맞춰 복습 알림 발송
+##### Backend
 
----
+```bash
+git clone https://github.com/TheTeamFLux/HWV.git
 
-### 🛠️ 사용 스택
+cd backend
 
-| 분류 | 기술 스택 |
-| --- | --- |
-| Backend | GitHub 생성·관리, Spring Boot 개발, MySQL(DB) 설계, 서버 배포 |
-| Frontend | HTML, JavaScript, CSS, React |
-| Design | Figma 디자인, UI/UX 설계 |
+./gradlew bootRun
+```
 
----
+##### Frontend
 
-### 🚀 실행 방법
+```bash
+cd frontend
 
-> _추가 예정_
+npm install
+
+npm run dev
+```
 
 ---
 
-### 🤖 AI 사용 내역
-#### 사용한 LLM 모델
-ChatGPT, Gemini, Claude
+#### AI 사용 내역
+
+##### 서비스에 사용한 AI 모델
+
+- Google Gemini 3.1 Lite
+
+##### AI 활용 기능
+
+- Java 코드 요약
+- 핵심 문법 분석
+- 맞춤형 코딩 문제 생성
+- 테스트 케이스 생성
+- 학습 콘텐츠 생성
+
+##### 개발 과정에서 활용한 AI
+
+- ChatGPT
+- Claude
+- Codex
+- Google Gemini
+
+##### 활용 내용
+
+- 서비스 기획
+- 백엔드 개발
+- 프론트엔드 개발
+- 코드 리팩토링
+- UI/UX 디자인
+- 테스트 코드 작성
+- README 작성
+- 발표 자료 제작
 
 ---
 
-### 라이선스
-> _추가 예정_
+#### 오픈소스 패키지
+
+#### Backend
+
+| 패키지 | 용도 |
+|--------|------|
+| Spring Boot | 백엔드 프레임워크 |
+| Spring Web | REST API 구현 |
+| Spring Data JPA | ORM 및 데이터베이스 관리 |
+| Spring Validation | 요청 데이터 검증 |
+| Spring Security Crypto | 비밀번호 암호화 |
+| Spring WebFlux | 비동기 HTTP 통신 |
+| Google API Client | Google API 연동 |
+| MySQL Connector/J | MySQL 연결 |
+| Apache PDFBox | PDF 텍스트 추출 |
+| Springdoc OpenAPI | Swagger API 문서 |
+| Spring Boot DevTools | 개발 편의 기능 |
+| Gradle | 프로젝트 빌드 |
+
+#### Frontend
+
+| 패키지 | 용도 |
+|--------|------|
+| React | 사용자 인터페이스 개발 |
+| React DOM | 브라우저 렌더링 |
+| React Router | 페이지 라우팅 |
+| Lucide React | 아이콘 |
+| Vite | 개발 및 빌드 |
+| ESLint | 코드 품질 검사 |
+| React Hooks ESLint Plugin | Hooks 규칙 검사 |
+| CSS | UI 스타일링 |
 
 ---
 
-## 하단 명시
+#### 라이선스
 
-### 🤖사용한 AI 모델
-Claude, ChatGPT, Gemini 등
+본 프로젝트는 **NAVER OGQ AI 공모전** 출품을 목적으로 제작되었습니다.
 
----
-
-### 오픈소스 패키지
-> _추가 예정_
+This project is licensed under the **MIT License**.
 
 ---
 
-### 외부 자문 (교사/현직자)
+# Team FLUX
 
-#### 교육 및 콘텐츠 자문 (Educational Advisors)
-- **OO고등학교 / OO학원 교사 [이름 또는 OOO 님]**
-  - 실제 교육 현장에서 학생들이 겪는 암기 및 복습의 한계점 자문
-  - 에빙하우스 망각 곡선 주기를 기반으로 한 복습 알림 타이밍(`1일 후 - 3일 후 - 7일 후`)의 실효성 검증 및 퀴즈 난이도 조절 가이드라인 제공
+> **Building AI-powered educational experiences for everyone.**
 
-#### 현업 기술 자문 (Technical Industry Advisors)
-- **OO기업 AI / 웹 풀스택 개발자 [이름 또는 OOO 님]**
-  - 대용량 PDF 업로드 시 프롬프트 토큰 제한(Context Window) 우려를 해결하기 위한 **RAG(정보 기반 생성) 아키텍처** 설계 자문
-  - AI가 생성하는 퀴즈의 JSON 출력 형식을 안정적으로 보장하기 위한 프롬프트 엔지니어링 기법 및 예외 처리 가이드 피드백
+HWV는 AI를 활용하여 누구나 자신의 수준에 맞는 학습 기회를 누릴 수 있도록, 교육의 격차를 줄이는 서비스를 만드는 **FLUX** 팀의 프로젝트입니다.
+- Vite

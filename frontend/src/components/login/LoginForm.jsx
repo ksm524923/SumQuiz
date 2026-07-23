@@ -1,143 +1,54 @@
-import { loginUser } from "../../services/authApi";
+import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-
-import Button from "../common/Button";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { loginUser } from "../../services/authApi";
+import { saveLoginUser } from "../../services/session";
 import "./LoginForm.css";
 
 function LoginForm() {
   const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    rememberLogin: false,
-  });
-
+  const { t } = useLanguage();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberLogin, setRememberLogin] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   function handleInputChange(event) {
-    const { name, value, type, checked } = event.target;
-
-    setFormData((previousData) => ({
-      ...previousData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const { name, value } = event.target;
+    setFormData((previousData) => ({ ...previousData, [name]: value }));
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
-
-    console.log("로그인 버튼 클릭됨");
-
-    if (formData.email.trim() === "") {
-      setErrorMessage("이메일을 입력해 주세요.");
-      return;
-    }
-
-    if (formData.password.trim() === "") {
-      setErrorMessage("비밀번호를 입력해 주세요.");
-      return;
-    }
-
-    setErrorMessage("");
-
+    if (isLoggingIn) return;
+    if (!formData.email.trim()) return setErrorMessage(t("emailPlaceholder"));
+    if (!formData.password.trim()) return setErrorMessage(t("passwordPlaceholder"));
+    setErrorMessage(""); setIsLoggingIn(true);
     try {
       const result = await loginUser(formData.email, formData.password);
-
-      console.log("로그인 성공", result);
-
+      saveLoginUser(result, formData.email, rememberLogin);
       navigate("/home");
     } catch (error) {
       console.error(error);
-      setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
-    }
-  }
-
-  function handleGoogleLogin() {
-    alert("Google 로그인은 나중에 백엔드와 연결합니다.");
+      setErrorMessage(error.message || t("retry"));
+    } finally { setIsLoggingIn(false); }
   }
 
   return (
     <section className="login-form">
-      <div className="login-form__heading">
-        <h2>로그인</h2>
-
-        <p>
-          <strong>SumQuiz</strong>에 오신 것을 환영합니다!
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit}>
-        <div className="login-form__field">
-          <label htmlFor="email">이메일</label>
-
-          <input
-            id="email"
-            name="email"
-            type="email"
-            value={formData.email}
-            placeholder="이메일을 입력하세요"
-            autoComplete="email"
-            onChange={handleInputChange}
-          />
-        </div>
-
-        <div className="login-form__field">
-          <label htmlFor="password">비밀번호</label>
-
-          <input
-            id="password"
-            name="password"
-            type="password"
-            value={formData.password}
-            placeholder="비밀번호를 입력하세요"
-            autoComplete="current-password"
-            onChange={handleInputChange}
-          />
-        </div>
-
+      <Sparkles className="login-form__sparkle" aria-hidden="true" />
+      <div className="login-form__heading"><h2>{t("welcomeBack")}</h2><p>{t("loginContinue")}</p></div>
+      <form onSubmit={handleSubmit} aria-busy={isLoggingIn}>
+        <div className="login-form__field"><label htmlFor="email">{t("email")}</label><div className="login-form__input-wrap"><Mail aria-hidden="true" /><input id="email" name="email" type="email" value={formData.email} placeholder={t("emailPlaceholder")} autoComplete="email" onChange={handleInputChange} disabled={isLoggingIn} /></div></div>
+        <div className="login-form__field"><label htmlFor="password">{t("password")}</label><div className="login-form__input-wrap"><LockKeyhole aria-hidden="true" /><input id="password" name="password" type={showPassword ? "text" : "password"} value={formData.password} placeholder={t("passwordPlaceholder")} autoComplete="current-password" onChange={handleInputChange} disabled={isLoggingIn} /><button className="login-form__password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={t("password")}>{showPassword ? <EyeOff /> : <Eye />}</button></div></div>
+        <div className="login-form__options"><label className="login-form__remember"><input type="checkbox" checked={rememberLogin} onChange={(event) => setRememberLogin(event.target.checked)} /><span>{t("remember")}</span></label><button type="button" onClick={() => setErrorMessage(t("forgotPassword"))}>{t("forgotPassword")}</button></div>
         {errorMessage && <p className="login-form__error">{errorMessage}</p>}
-
-        <div className="login-form__options">
-          <label className="login-form__remember">
-            <input
-              name="rememberLogin"
-              type="checkbox"
-              checked={formData.rememberLogin}
-              onChange={handleInputChange}
-            />
-
-            <span>로그인 상태 유지</span>
-          </label>
-
-          <Link to="/find-password">비밀번호 찾기</Link>
-        </div>
-
-        <Button type="submit" fullWidth>
-          로그인
-        </Button>
+        <button className="login-form__submit" type="submit" disabled={isLoggingIn}><span>{isLoggingIn ? t("loggingIn") : t("login")}</span>{!isLoggingIn && <ArrowRight />}</button>
       </form>
-
-      <div className="login-form__divider">
-        <span>또는</span>
-      </div>
-
-      <button
-        className="login-form__google"
-        type="button"
-        onClick={handleGoogleLogin}
-      >
-        <span className="login-form__google-icon">G</span>
-        Google로 로그인
-      </button>
-
-      <p className="login-form__signup">
-        아직 계정이 없으신가요?
-        <Link to="/signup"> 회원가입</Link>
-      </p>
+      <div className="login-form__signup"><i /><p>{t("noAccount")} <Link to="/signup">{t("signup")}</Link></p><i /></div>
     </section>
   );
 }
-
 export default LoginForm;

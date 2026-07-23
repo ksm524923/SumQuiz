@@ -1,14 +1,23 @@
+server:
+  port: ${PORT:8080}
+
 spring:
+  main:
+    lazy-initialization: true
+
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslMode=REQUIRED&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      initialization-fail-timeout: -1
+      connection-timeout: 10000
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -16,3 +25,13 @@ spring:
 gemini:
   api:
     key: ${GEMINI_API_KEY}
+    model: ${GEMINI_MODEL:gemini-2.5-flash}
+
+google:
+  client-id: ${GOOGLE_CLIENT_ID:}
+
+github:
+  app-id: ${GITHUB_APP_ID:}
+  app-slug: ${GITHUB_APP_SLUG:}
+  private-key: ${GITHUB_APP_PRIVATE_KEY:}
+  frontend-url: ${FRONTEND_URL:https://hwv.vercel.app}

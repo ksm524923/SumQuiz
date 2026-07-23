@@ -19,6 +19,9 @@ public class User {
     @Column(nullable = false)
     private String name;
 
+    @Column(unique = true)
+    private String googleSubject;
+
     public User() {
     }
 
@@ -49,4 +52,13 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getGoogleSubject() {
+        return googleSubject;
+    }
+
+    public void setGoogleSubject(String googleSubject) {
+        this.googleSubject = googleSubject;
+    }
+
 }

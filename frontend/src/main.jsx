@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
 
 import App from "./App.jsx";
+import { LanguageProvider } from "./i18n/LanguageContext.jsx";
 
 import "./styles/reset.css";
 import "./styles/variables.css";
@@ -10,8 +11,6 @@ import "./styles/global.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <LanguageProvider><BrowserRouter><App /></BrowserRouter></LanguageProvider>
   </StrictMode>,
 );
