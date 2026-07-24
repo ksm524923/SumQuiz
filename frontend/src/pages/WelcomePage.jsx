@@ -20,7 +20,7 @@ const copy = {
     heroTitle: "코드에서 시작되는", heroAccent: "AI 맞춤형 Java 학습",
     scroll: "스크롤하여 HWV 알아보기",
     aboutEyebrow: "ABOUT HWV",
-    aboutTitle: <>HWV는 일반적인 Java 문제를<br />무작위로 제공하지 않습니다.</>,
+    aboutTitle: <>HWV는 일반적인 <br/>Java 문제를무작위로 제공하지 않습니다.</>,
     aboutDescription: "사용자가 직접 작성한 Java 코드에서 실제로 사용된 핵심 문법을 분석하고, 그 문법을 연습할 수 있는 맞춤형 코딩 문제를 생성합니다.",
     analysisFeatures: [
       { title: "Java 코드 분석", description: "업로드한 코드의 구조와 흐름을 살펴봅니다." },

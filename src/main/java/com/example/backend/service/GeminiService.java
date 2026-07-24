@@ -354,7 +354,8 @@ public class GeminiService {
                 if (!"solution".equals(methodName)) throw new IllegalStateException("메서드 이름은 solution이어야 합니다.");
                 String returnType = supportedType(requiredText(node, "returnType", "반환형"));
                 List<String> parameterTypes = new ArrayList<>();
-                for (JsonNode type : node.path("parameterTypes")) parameterTypes.add(supportedType(type.asText()));
+                for (JsonNode type :
+                        node.path("parameterTypes")) parameterTypes.add(supportedType(type.asText()));
                 if (parameterTypes.isEmpty()) throw new IllegalStateException(grammar + " 문제의 매개변수 타입이 없습니다.");
                 for (int testIndex = 0; testIndex < 3; testIndex++) {
                     JsonNode test = testNodes.get(testIndex);
